@@ -62,7 +62,7 @@ export const POST = withAuth(async (req, { user }) => {
         if (partner?.pushSubscription) {
             await sendPushNotification(partner.pushSubscription, {
                 title: "🌕 New Memory Captured!",
-                body: `${user.name} just added a new memory: "${memory.title}"${memory.audioUrl ? " — it has a voice message! 🎙️" : ""}`,
+                body: `${user.name} just added a new memory: "${memory.title}"`,
                 data: {
                     url: "/memories",
                     type: "memory"

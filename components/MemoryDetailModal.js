@@ -196,52 +196,6 @@ export default function MemoryDetailModal({ memory, onClose }) {
                                     {memory.description || "The silence of the cosmos holds this moment's secret."}
                                 </p>
 
-                                {memory.audioUrl && (
-                                    <div className="p-6 lg:p-10 rounded-[2.5rem] bg-gradient-to-br from-purple-500/10 via-white/5 to-transparent border border-white/10 mb-8 overflow-hidden relative group">
-                                         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full" />
-                                        
-                                        <div className="flex items-center gap-6 mb-8 relative z-10">
-                                            <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-xl shadow-purple-500/20">
-                                                <span className="text-2xl">🎙️</span>
-                                            </div>
-                                            <div>
-                                                <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em] mb-1">Aural Transmission</p>
-                                                <p className="text-sm font-bold text-white uppercase tracking-widest">Recorded Moment</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="bg-black/60 backdrop-blur-xl rounded-2xl p-6 border border-white/10 relative z-10 shadow-2xl">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest">Digital Waveform</span>
-                                                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Secure Link</span>
-                                            </div>
-                                            <audio 
-                                                controls 
-                                                src={memory.audioUrl} 
-                                                className="w-full h-10 transition-all" 
-                                            />
-                                            {/* Progress visualizer hint */}
-                                            <div className="mt-3 flex gap-0.5 justify-center h-4 items-end overflow-hidden">
-                                                {[...Array(20)].map((_, i) => (
-                                                    <motion.div
-                                                        key={i}
-                                                        animate={{ 
-                                                            height: ["20%", "60%", "30%", "80%", "40%"],
-                                                            opacity: [0.2, 0.5, 0.2]
-                                                        }}
-                                                        transition={{ 
-                                                            duration: 0.8, 
-                                                            repeat: Infinity, 
-                                                            delay: i * 0.05,
-                                                            ease: "easeInOut"
-                                                        }}
-                                                        className="w-1 bg-purple-500/30 rounded-full"
-                                                    />
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
 
                             <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center">

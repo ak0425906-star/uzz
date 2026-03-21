@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import VoiceRecorder from "./VoiceRecorder";
 
 export default function AddMemoryForm({ onAdd, onClose }) {
     const [form, setForm] = useState({
@@ -232,7 +231,6 @@ export default function AddMemoryForm({ onAdd, onClose }) {
                         )}
                     </div>
 
-                    <VoiceRecorder onUploadComplete={(url) => setForm(prev => ({ ...prev, audioUrl: url }))} />
 
                     {/* Actions */}
                     <div className="flex gap-4 pt-4">
