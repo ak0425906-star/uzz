@@ -62,7 +62,7 @@ export default function LoginPage() {
                             animate={{ scale: [1, 1.05, 1] }}
                             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                         >
-                            <span className="text-4xl">🌙</span>
+                            <span className="text-4xl">🌕</span>
                         </motion.div>
                         <h1 className="text-3xl font-black text-white tracking-tighter uppercase italic">
                             WELCOME <span className="text-gradient">BACK</span>
