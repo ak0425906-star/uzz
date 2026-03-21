@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { withAuth } from "@/lib/withAuth";
 import { validateBody } from "@/lib/validate";
 import Memory from "@/models/Memory";
+import User from "@/models/User";
+import { sendPushNotification } from "@/lib/push";
 
 const MOODS = ["❤️", "😊", "🥰", "✨", "🌟", "🎉", "🥺", "💫"];
 const CATEGORIES = ["milestone", "date", "travel", "everyday", "special"];
@@ -49,6 +51,27 @@ export const POST = withAuth(async (req, { user }) => {
         userId: user.id,
         coupleId: user.coupleId,
     });
+
+    // Notify partner
+    try {
+        const partner = await User.findOne({ 
+            coupleId: user.coupleId, 
+            _id: { $ne: user.id } 
+        });
+
+        if (partner?.pushSubscription) {
+            await sendPushNotification(partner.pushSubscription, {
+                title: "🌕 New Memory Captured!",
+                body: `${user.name} just added a new memory: "${memory.title}"${memory.audioUrl ? " — it has a voice message! 🎙️" : ""}`,
+                data: {
+                    url: "/memories",
+                    type: "memory"
+                }
+            });
+        }
+    } catch (pushError) {
+        console.error("Partner notification failed:", pushError);
+    }
 
     return NextResponse.json({ memory }, { status: 201 });
 });
