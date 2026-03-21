@@ -39,34 +39,62 @@ export default function MemoryDetailModal({ memory, onClose }) {
                 className="relative w-full max-w-6xl glass-morphism border-white/10 rounded-[4rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] max-h-[90vh] flex flex-col lg:flex-row"
             >
                 {/* Visual Section - Multi-Image Gallery */}
-                <div className="w-full lg:w-3/5 h-[400px] lg:h-auto relative overflow-hidden group flex flex-col">
-                    <div className="flex-1 relative overflow-hidden">
+                <div className="w-full lg:w-3/5 h-[450px] lg:h-auto relative overflow-hidden group flex flex-col bg-black">
+                    <div className="flex-1 relative overflow-hidden flex items-center justify-center">
                         <AnimatePresence mode="wait">
                             <motion.img
                                 key={activeImageIndex}
-                                initial={{ opacity: 0, scale: 1.1 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ duration: 0.6 }}
+                                initial={{ opacity: 0, x: 20, scale: 1.05 }}
+                                animate={{ opacity: 1, x: 0, scale: 1 }}
+                                exit={{ opacity: 0, x: -20, scale: 0.95 }}
+                                transition={{ duration: 0.4, ease: "easeOut" }}
                                 src={(memory.images && memory.images.length > 0) ? memory.images[activeImageIndex] : memory.imageUrl || "https://images.unsplash.com/photo-1436891620584-47fd0e565afb?q=80&w=1200&auto=format&fit=crop"}
                                 alt={memory.title}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover lg:object-contain"
                             />
                         </AnimatePresence>
+                        
+                        {/* Navigation Arrows */}
+                        {memory.images && memory.images.length > 1 && (
+                            <>
+                                <button 
+                                    onClick={() => setActiveImageIndex(prev => (prev === 0 ? memory.images.length - 1 : prev - 1))}
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity z-30"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+                                </button>
+                                <button 
+                                    onClick={() => setActiveImageIndex(prev => (prev === memory.images.length - 1 ? 0 : prev + 1))}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity z-30"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                                </button>
+                            </>
+                        )}
+
+                        {/* Photo Counter */}
+                        {memory.images && memory.images.length > 0 && (
+                            <div className="absolute top-6 left-6 px-4 py-1.5 rounded-full bg-black/40 backdrop-blur-xl border border-white/10 z-30">
+                                <p className="text-[10px] font-black text-white/80 tracking-widest">
+                                    {activeImageIndex + 1} / {memory.images.length}
+                                </p>
+                            </div>
+                        )}
+
                         <div className="absolute inset-0 bg-gradient-to-t from-[#060614] via-transparent to-transparent lg:hidden" />
                     </div>
 
                     {/* Image Selector Thumbnails */}
                     {memory.images && memory.images.length > 1 && (
-                        <div className="absolute bottom-10 inset-x-0 flex justify-center gap-3 px-12 z-20 overflow-x-auto no-scrollbar pb-2">
+                        <div className="absolute bottom-6 inset-x-0 flex justify-center gap-2.5 px-12 z-20 overflow-x-auto no-scrollbar pb-2">
                             {memory.images.map((img, idx) => (
                                 <motion.button
                                     key={idx}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
                                     onClick={() => setActiveImageIndex(idx)}
-                                    className={`w-14 h-14 rounded-2xl overflow-hidden border-2 transition-all flex-shrink-0 shadow-2xl ${
-                                        activeImageIndex === idx ? "border-purple-500 scale-110" : "border-white/10 opacity-60"
+                                    className={`w-12 h-12 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 shadow-2xl ${
+                                        activeImageIndex === idx ? "border-purple-500 scale-110 shadow-purple-500/20" : "border-white/5 opacity-40 hover:opacity-100"
                                     }`}
                                 >
                                     <img src={img} className="w-full h-full object-cover" />
@@ -75,7 +103,7 @@ export default function MemoryDetailModal({ memory, onClose }) {
                         </div>
                     )}
                     
-                    <div className="absolute inset-x-0 bottom-0 p-12 hidden lg:block bg-gradient-to-t from-black/90 via-black/20 to-transparent">
+                    <div className="absolute inset-x-0 bottom-0 p-12 hidden lg:block bg-gradient-to-t from-black/95 via-black/40 to-transparent">
                         <p className="text-[10px] text-white/40 uppercase tracking-[0.6em] font-black mb-2 italic">Celestial Archive</p>
                         <h3 className="text-4xl font-black text-white tracking-tighter uppercase italic">{memory.title}</h3>
                     </div>
