@@ -3,6 +3,7 @@ import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
 import Navbar from "@/components/Navbar";
 import { ToastProvider } from "@/components/ToastProvider";
+import PushSubscription from "@/components/PushSubscription";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -53,6 +54,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <ToastProvider>
             <Navbar />
+            <PushSubscription />
             <main style={{ position: 'relative', zIndex: 1, touchAction: 'pan-y' }}>{children}</main>
           </ToastProvider>
         </AuthProvider>

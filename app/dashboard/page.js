@@ -14,6 +14,7 @@ import DailyPromptWidget from "@/components/DailyPromptWidget";
 import LoveStreakWidget from "@/components/LoveStreakWidget";
 import QuestionOfTheDay from "@/components/QuestionOfTheDay";
 import MessageFeed from "@/components/MessageFeed";
+import SOSWidget from "@/components/SOSWidget";
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
@@ -170,6 +171,17 @@ export default function DashboardPage() {
                             <p className="text-3xl md:text-5xl font-black text-white">{stats.letters}</p>
                             <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] font-black mt-1">Letters</p>
                         </div>
+                    </motion.div>
+
+                    {/* SOS Widget */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.25 }}
+                        className="md:col-span-3 md:row-span-1 glass-morphism rounded-[2.5rem] p-6 sm:p-8 relative overflow-hidden group"
+                    >
+                         <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-red-500/10 blur-3xl rounded-full" />
+                        <SOSWidget />
                     </motion.div>
 
                     {/* Upcoming Letter Notification */}

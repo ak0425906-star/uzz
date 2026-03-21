@@ -45,6 +45,10 @@ const UserSchema = new mongoose.Schema(
         togetherSince: {
             type: Date,
         },
+        pushSubscription: {
+            type: Object,
+            default: null,
+        },
     },
     { timestamps: true }
 );
