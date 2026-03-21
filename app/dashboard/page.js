@@ -84,7 +84,7 @@ export default function DashboardPage() {
                     className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full"
                 />
                 <p className="text-[10px] text-white/20 uppercase tracking-[0.4em] font-bold">
-                    Loading your universe...
+                    Loading your UZZ 🌕...
                 </p>
             </div>
         );
@@ -120,7 +120,7 @@ export default function DashboardPage() {
                             </span>
                         </h1>
                         <p className="text-white/30 text-xs uppercase tracking-[0.4em] font-bold">
-                            Exploring our private cosmos
+                            Exploring our private UZZ 🌕
                         </p>
                     </motion.div>
 

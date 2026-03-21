@@ -7,7 +7,7 @@ import { ToastProvider } from "@/components/ToastProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Our Universe — Couple Journal",
+  title: "UZZ 🌕 — Couple Journal",
   description:
     "A private, beautiful space for couples to capture memories, write letters to the future, and celebrate their love story.",
   keywords: "couple journal, relationship, memories, love, private diary",
@@ -15,7 +15,7 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Our Universe",
+    title: "UZZ 🌕",
     startupImage: [
       "/icon.png",
     ],
@@ -27,7 +27,7 @@ export const metadata = {
   },
   metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
   openGraph: {
-    title: "Our Universe — Couple Journal",
+    title: "UZZ 🌕 — Couple Journal",
     description: "A private digital sanctuary for your love story.",
     type: "website",
   },

@@ -1,4 +1,4 @@
-# 🌌 Our Universe — Couple Journal
+# ?? UZZ ?? � Couple Journal
 
 A private, beautiful web application for couples to capture memories, write letters to their future selves, and celebrate their love story.
 

@@ -91,10 +91,10 @@ export default function RegisterPage() {
                             <span className="text-4xl">💫</span>
                         </motion.div>
                         <h1 className="text-3xl font-black text-white tracking-tighter uppercase italic">
-                            CREATE YOUR <span className="text-gradient">UNIVERSE</span>
+                            CREATE YOUR <span className="text-gradient">UZZ 🌕</span>
                         </h1>
                         <p className="text-[11px] text-white/30 uppercase tracking-[0.4em] font-bold mt-3">
-                            Initialize a new orbit for two
+                            Initialize a new orbit in UZZ 🌕
                         </p>
                     </div>
 
@@ -198,7 +198,7 @@ export default function RegisterPage() {
                                 <div className="text-center mb-4">
                                     <span className="text-4xl block mb-3">💕</span>
                                     <p className="text-sm text-white/50 italic font-medium">
-                                        Link your partner to share your universe
+                                        Link your partner to share your UZZ 🌕
                                     </p>
                                 </div>
 

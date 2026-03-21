@@ -39,7 +39,7 @@ export default function AnniversaryBanner() {
                     Happy {years > 0 ? `${years} Year` : ""} Anniversary!
                 </h2>
                 <p className="text-white/60 mt-2 text-sm italic font-medium">
-                    "Every second with you is a new favorite memory in our universe."
+                    "Every second with you is a new favorite memory in our UZZ 🌕."
                 </p>
                 <div className="mt-6 flex justify-center gap-2">
                     {[1, 2, 3].map(i => (
