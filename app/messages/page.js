@@ -61,7 +61,7 @@ export default function MessagesPage() {
     };
 
     return (
-        <div className="relative min-h-screen bg-[#060614] pt-24 pb-8 px-4 overflow-hidden flex flex-col">
+        <div className="relative min-h-screen bg-[#060614] pt-24 pb-36 md:pb-12 px-4 overflow-hidden flex flex-col">
             <StarField />
 
             <div className="relative z-10 max-w-4xl mx-auto w-full flex-1 flex flex-col">
