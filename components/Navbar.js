@@ -16,7 +16,8 @@ export default function Navbar() {
     // Don't show navbar on landing or auth pages
     if (
         pathname === "/" ||
-        pathname.startsWith("/auth")
+        pathname.startsWith("/auth") ||
+        pathname === "/messages"
     ) {
         return null;
     }

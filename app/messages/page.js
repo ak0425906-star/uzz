@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import StarField from "@/components/StarField";
 
 export default function MessagesPage() {
@@ -61,19 +62,32 @@ export default function MessagesPage() {
     };
 
     return (
-        <div className="relative min-h-screen bg-[#060614] pt-24 pb-36 md:pb-12 px-4 overflow-hidden flex flex-col">
+        <div className="relative min-h-screen bg-[#060614] pt-24 pb-12 px-4 overflow-hidden flex flex-col">
             <StarField />
 
             <div className="relative z-10 max-w-4xl mx-auto w-full flex-1 flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
-                    <div>
-                        <h1 className="text-4xl font-black text-white tracking-tighter italic uppercase">
-                            COSMIC <span className="text-gradient">CHAT</span>
-                        </h1>
-                        <p className="text-[10px] text-white/30 uppercase tracking-[0.4em] font-black mt-1">
-                            A private channel in UZZ 🌕
-                        </p>
+                    <div className="flex items-center gap-4">
+                        <Link href="/dashboard">
+                            <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all cursor-pointer"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </motion.div>
+                        </Link>
+                        <div>
+                            <h1 className="text-4xl font-black text-white tracking-tighter italic uppercase">
+                                COSMIC <span className="text-gradient">CHAT</span>
+                            </h1>
+                            <p className="text-[10px] text-white/30 uppercase tracking-[0.4em] font-black mt-1">
+                                A private channel in UZZ 🌕
+                            </p>
+                        </div>
                     </div>
                 </div>
 
