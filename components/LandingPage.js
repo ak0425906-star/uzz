@@ -33,8 +33,7 @@ export default function LandingPage() {
 
                     <div className="space-y-4">
                         <h1 className="text-6xl sm:text-8xl md:text-9xl font-black text-white leading-none tracking-tighter uppercase italic">
-                            OUR <br />
-                            <span className="text-gradient">UNIVERSE</span>
+                            UZZ <span className="text-gradient">🌕</span>
                         </h1>
                         <p className="text-xs text-white/40 uppercase tracking-[0.6em] font-black max-w-lg mx-auto leading-loose">
                             A private digital sanctuary designed to <br className="hidden sm:block" /> immortalize your love story across dimensions.

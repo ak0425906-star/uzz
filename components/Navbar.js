@@ -46,7 +46,7 @@ export default function Navbar() {
                         >
                             <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 shadow-[0_0_10px_rgba(168,85,247,0.5)] animate-pulse" />
                             <span className="text-xs font-black uppercase tracking-[0.4em] text-white/90">
-                                Universe
+                                UZZ 🌕
                             </span>
                         </motion.div>
                     </Link>
