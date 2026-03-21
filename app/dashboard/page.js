@@ -13,6 +13,7 @@ import OnThisDayWidget from "@/components/OnThisDayWidget";
 import DailyPromptWidget from "@/components/DailyPromptWidget";
 import LoveStreakWidget from "@/components/LoveStreakWidget";
 import QuestionOfTheDay from "@/components/QuestionOfTheDay";
+import MessageFeed from "@/components/MessageFeed";
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
@@ -192,6 +193,16 @@ export default function DashboardPage() {
                         </motion.div>
                     )}
 
+                    {/* Quick Message Feed */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="md:col-span-3 md:row-span-2 glass-morphism rounded-[2.5rem] p-6 sm:p-8 flex flex-col relative overflow-hidden group"
+                    >
+                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full group-hover:bg-purple-500/20 transition-all duration-700" />
+                        <MessageFeed />
+                    </motion.div>
 
                     {/* Recent Memories */}
                     <motion.div
