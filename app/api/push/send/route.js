@@ -1,25 +1,10 @@
 import { NextResponse } from "next/server";
 import { withAuth } from "@/lib/withAuth";
 import User from "@/models/User";
-import webpush from "web-push";
+import { sendPushNotification } from "@/lib/push";
 
 // POST — trigger a push notification to the partner
 export const POST = withAuth(async (req, { user }) => {
-    // Initialize web-push inside handler to ensure env vars are loaded
-    const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-    const privateVapidKey = process.env.VAPID_PRIVATE_KEY;
-
-    if (!publicVapidKey || !privateVapidKey) {
-        console.error("VAPID keys are missing from environment variables");
-        return NextResponse.json({ error: "Push service not configured" }, { status: 500 });
-    }
-
-    webpush.setVapidDetails(
-        process.env.VAPID_SUBJECT || "mailto:ak0425906@gmail.com",
-        publicVapidKey,
-        privateVapidKey
-    );
-
     try {
         const { type, customMessage } = await req.json();
 
@@ -51,15 +36,12 @@ export const POST = withAuth(async (req, { user }) => {
             body = customMessage;
         }
 
-        const payload = JSON.stringify({
+        await sendPushNotification(partner.pushSubscription, {
             title,
             body,
             icon,
             data: { url: "/dashboard" }
         });
-
-        // 3. Send Push
-        await webpush.sendNotification(partner.pushSubscription, payload);
 
         return NextResponse.json({ message: "Notification sent to partner" });
     } catch (err) {

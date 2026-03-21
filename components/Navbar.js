@@ -23,11 +23,11 @@ export default function Navbar() {
 
     const navLinks = [
         { href: "/dashboard", label: "Home", icon: "🌌" },
+        { href: "/messages", label: "Messages", icon: "💬" },
         { href: "/memories", label: "Timeline", icon: "💫" },
         { href: "/journal", label: "Moods", icon: "📓" },
-        { href: "/bucket-list", label: "Bucket List", icon: "✈️" },
         { href: "/letters", label: "Archive", icon: "💌" },
-        { href: "/our-story", label: "Our Story", icon: "📊" },
+        { href: "/our-story", label: "Stats", icon: "📊" },
     ];
 
     const isActive = (path) => pathname === path;
