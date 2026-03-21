@@ -64,42 +64,45 @@ export default function VoiceRecorder({ onUploadComplete }) {
     };
 
     return (
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-            <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    <span className="text-xl">🎙️</span>
+        <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 mb-6 overflow-hidden relative group">
+            <div className="flex items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${isRecording ? "bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]" : "bg-white/10"}`}>
+                        <span className="text-xl">{isRecording ? "🔴" : "🎙️"}</span>
+                    </div>
                     <div>
-                        <p className="text-sm font-bold text-white uppercase tracking-wider">Voice Memo</p>
-                        <p className="text-[10px] text-white/40">Add your voice to this memory</p>
+                        <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-1">
+                            {isRecording ? "Capturing Sound..." : "Aural Memo"}
+                        </p>
+                        <p className="text-sm font-bold text-white uppercase tracking-widest">
+                            {audioUrl ? "Voice Captured" : "Record your voice"}
+                        </p>
                     </div>
                 </div>
 
                 {!audioUrl ? (
                     <motion.button
                         type="button"
-                        whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={isRecording ? stopRecording : startRecording}
-                        className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${isRecording
-                                ? "bg-red-500 animate-pulse"
-                                : "bg-purple-600 hover:bg-purple-500"
-                            }`}
+                        className={`px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all ${
+                            isRecording 
+                            ? "bg-white text-black animate-pulse" 
+                            : "bg-purple-600 text-white shadow-xl shadow-purple-500/20"
+                        }`}
                     >
-                        {isRecording ? (
-                            <div className="w-4 h-4 bg-white rounded-sm" />
-                        ) : (
-                            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
-                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
-                            </svg>
-                        )}
+                        {isRecording ? "Stop & Transmit" : "Start Recording"}
                     </motion.button>
                 ) : (
-                    <div className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded-xl">
-                        <span className="text-xs text-green-400 font-bold uppercase tracking-widest">Recorded</span>
+                    <div className="flex items-center gap-4">
+                        <div className="px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-full">
+                             <span className="text-[9px] text-green-400 font-bold uppercase tracking-widest">Received</span>
+                        </div>
                         <button
                             type="button"
-                            onClick={() => setAudioUrl(null)}
-                            className="text-white/40 hover:text-white"
+                            onClick={() => { setAudioUrl(null); onUploadComplete(""); }}
+                            className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors"
                         >
                             ✕
                         </button>
@@ -107,12 +110,33 @@ export default function VoiceRecorder({ onUploadComplete }) {
                 )}
             </div>
 
+            {isRecording && (
+                <div className="mt-6 flex gap-1 justify-center h-8 items-center bg-black/20 rounded-xl p-3">
+                    {[...Array(12)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            animate={{ 
+                                height: ["20%", "100%", "40%", "80%", "30%"],
+                                opacity: [0.3, 1, 0.3]
+                            }}
+                            transition={{ 
+                                duration: 0.5, 
+                                repeat: Infinity, 
+                                delay: i * 0.05,
+                                ease: "easeInOut"
+                            }}
+                            className="w-1 bg-red-500 rounded-full"
+                        />
+                    ))}
+                </div>
+            )}
+
             {uploading && (
-                <div className="mt-3 h-1 bg-white/5 rounded-full overflow-hidden">
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
                     <motion.div
                         initial={{ x: "-100%" }}
                         animate={{ x: "0%" }}
-                        className="h-full bg-purple-500"
+                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"
                     />
                 </div>
             )}
