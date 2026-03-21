@@ -223,18 +223,12 @@ export default function MemoryDetailModal({ memory, onClose }) {
                         </motion.div>
                     )}
                 </AnimatePresence>
-
                 {/* Close handle for mobile */}
                 <button
                     onClick={onClose}
                     className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full bg-black/40 text-white lg:hidden z-[100] backdrop-blur-xl border border-white/10"
                 >
                     <span className="text-xl">✕</span>
-                </button>
-            </motion.div>
-        </motion.div>
-    );
-}
                 </button>
             </motion.div>
         </motion.div>
