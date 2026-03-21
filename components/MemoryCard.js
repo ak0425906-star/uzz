@@ -68,7 +68,10 @@ export default function MemoryCard({ memory, onDelete, onView, index }) {
                         {new Date(memory.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                     </p>
                     {memory.audioUrl && (
-                        <div className="w-1 h-1 bg-purple-500 rounded-full animate-pulse" />
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20">
+                            <div className="w-1 h-1 bg-purple-500 rounded-full animate-pulse" />
+                            <span className="text-[8px] font-black text-purple-400 uppercase tracking-widest">Voice Memo</span>
+                        </div>
                     )}
                 </div>
 

@@ -210,11 +210,15 @@ export default function MemoryDetailModal({ memory, onClose }) {
                                             </div>
                                         </div>
 
-                                        <div className="bg-black/40 backdrop-blur-md rounded-2xl p-4 border border-white/5 relative z-10">
+                                        <div className="bg-black/60 backdrop-blur-xl rounded-2xl p-6 border border-white/10 relative z-10 shadow-2xl">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest">Digital Waveform</span>
+                                                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Secure Link</span>
+                                            </div>
                                             <audio 
                                                 controls 
                                                 src={memory.audioUrl} 
-                                                className="w-full h-8 opacity-60 hover:opacity-100 transition-all filter invert hue-rotate-180 brightness-200" 
+                                                className="w-full h-10 transition-all" 
                                             />
                                             {/* Progress visualizer hint */}
                                             <div className="mt-3 flex gap-0.5 justify-center h-4 items-end overflow-hidden">

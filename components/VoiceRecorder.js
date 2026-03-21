@@ -21,7 +21,8 @@ export default function VoiceRecorder({ onUploadComplete }) {
             };
 
             mediaRecorder.current.onstop = async () => {
-                const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
+                const mimeType = mediaRecorder.current.mimeType || "audio/webm";
+                const audioBlob = new Blob(audioChunks.current, { type: mimeType });
                 uploadAudio(audioBlob);
             };
 
