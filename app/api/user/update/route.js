@@ -18,10 +18,9 @@ export const PATCH = withAuth(async (req, { user }) => {
     if (validated.milestoneName) updateData.milestoneName = validated.milestoneName;
     if (validated.togetherSince) updateData.togetherSince = validated.togetherSince;
 
-    const updatedUser = await User.findByIdAndUpdate(
-        user.id,
-        updateData,
-        { new: true }
+    const updatedUser = await User.updateMany(
+        { coupleId: user.coupleId },
+        updateData
     );
 
     return NextResponse.json({ user: updatedUser });

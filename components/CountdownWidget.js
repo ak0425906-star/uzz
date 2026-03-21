@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import confetti from "canvas-confetti";
 
 export default function CountdownWidget() {
     const { data: session, update } = useSession();
@@ -11,6 +12,7 @@ export default function CountdownWidget() {
     const [editDate, setEditDate] = useState("");
     const [editName, setEditName] = useState("");
     const [milestoneName, setMilestoneName] = useState("Our Special Day");
+    const [isCelebrated, setIsCelebrated] = useState(false);
     const [timeLeft, setTimeLeft] = useState({
         days: 0,
         hours: 0,
@@ -18,20 +20,31 @@ export default function CountdownWidget() {
         seconds: 0
     });
 
+    const celebrationTriggered = useRef(false);
+
+    // Initial fetch and polling for changes from partner
     useEffect(() => {
-        if (session?.user?.anniversaryDate) {
-            calculateNextOccurrence(new Date(session.user.anniversaryDate));
-        } else {
-            // Default to March 28 if none set
-            const defaultDate = new Date();
-            defaultDate.setMonth(2); // March is 2
-            defaultDate.setDate(28);
-            calculateNextOccurrence(defaultDate);
-        }
-        if (session?.user?.milestoneName) {
-            setMilestoneName(session.user.milestoneName);
-        }
-    }, [session]);
+        const syncMilestone = async () => {
+            try {
+                const res = await fetch("/api/milestone");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.anniversaryDate) {
+                        calculateNextOccurrence(new Date(data.anniversaryDate));
+                    }
+                    if (data.milestoneName) {
+                        setMilestoneName(data.milestoneName);
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to sync milestone:", err);
+            }
+        };
+
+        syncMilestone();
+        const interval = setInterval(syncMilestone, 30000); // Poll every 30s
+        return () => clearInterval(interval);
+    }, []);
 
     const calculateNextOccurrence = (baseDate) => {
         const now = new Date();
@@ -51,8 +64,17 @@ export default function CountdownWidget() {
             const difference = targetDate - now;
 
             if (difference <= 0) {
-                calculateNextOccurrence(targetDate); // Reset for next year
+                if (!celebrationTriggered.current) {
+                    triggerCelebration();
+                    celebrationTriggered.current = true;
+                }
+                setTimeout(() => calculateNextOccurrence(targetDate), 5000); // Reset after 5s
                 return;
+            }
+
+            // Reset celebration trigger if target date is in the future
+            if (difference > 1000) {
+                celebrationTriggered.current = false;
             }
 
             setTimeLeft({
@@ -66,6 +88,19 @@ export default function CountdownWidget() {
         return () => clearInterval(timer);
     }, [targetDate]);
 
+    const triggerCelebration = () => {
+        setIsCelebrated(true);
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
+        });
+        
+        // Notification toast would go here if available
+        setTimeout(() => setIsCelebrated(false), 10000);
+    };
+
     const handleSave = async (e) => {
         e.preventDefault();
         try {
@@ -78,12 +113,16 @@ export default function CountdownWidget() {
                 }),
             });
             if (res.ok) {
+                // local update for instant feedback
+                setMilestoneName(editName);
+                if (editDate) calculateNextOccurrence(new Date(editDate));
+                setIsEditing(false);
+                
+                // Optional: update session to keep it fresh
                 await update({
                     anniversaryDate: editDate || session?.user?.anniversaryDate,
                     milestoneName: editName
                 });
-                setMilestoneName(editName);
-                setIsEditing(false);
             }
         } catch (err) {
             console.error("Failed to update milestone", err);
@@ -99,54 +138,78 @@ export default function CountdownWidget() {
 
     return (
         <>
-            <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border border-white/10 rounded-3xl p-6 backdrop-blur-md shadow-2xl relative overflow-hidden group">
+            <div className={`transition-all duration-700 bg-gradient-to-br ${isCelebrated ? 'from-pink-600 to-purple-600 scale-105 shadow-[0_0_50px_rgba(236,72,153,0.3)]' : 'from-indigo-900/40 to-purple-900/40 border-white/10'} border rounded-3xl p-6 backdrop-blur-md shadow-2xl relative overflow-hidden group`}>
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/20 blur-3xl rounded-full" />
+                
+                {isCelebrated && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none"
+                    />
+                )}
 
                 <div className="relative z-10">
                     <div className="flex items-center justify-between mb-6">
                         <div className="space-y-1">
                             <h3 className="text-white font-black uppercase tracking-[0.2em] text-[10px] opacity-60">
-                                COUNTDOWN TO
+                                {isCelebrated ? "✨ HAPPY ✨" : "COUNTDOWN TO"}
                             </h3>
                             <p className="text-white font-black text-sm uppercase tracking-widest italic text-gradient">
                                 {milestoneName}
                             </p>
                         </div>
-                        <span className="text-2xl group-hover:rotate-12 transition-transform duration-500">⏳</span>
+                        <span className={`text-2xl transition-all duration-500 ${isCelebrated ? 'scale-150 rotate-[360deg]' : 'group-hover:rotate-12'}`}>
+                            {isCelebrated ? "🎉" : "⏳"}
+                        </span>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-2">
-                        {stats.map((stat, i) => (
-                            <div key={i} className="flex flex-col items-center">
-                                <motion.div
-                                    key={stat.value}
-                                    initial={{ y: 5, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    className="text-2xl sm:text-3xl font-black text-white tabular-nums tracking-tighter"
-                                >
-                                    {String(stat.value).padStart(2, '0')}
-                                </motion.div>
-                                <div className="text-[8px] uppercase tracking-widest text-white/30 font-black mt-1">
-                                    {stat.label}
+                    {isCelebrated ? (
+                        <div className="h-[60px] flex items-center justify-center">
+                            <motion.p 
+                                initial={{ scale: 0.5, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                className="text-xl font-black text-white uppercase tracking-[0.3em] italic"
+                            >
+                                IT&apos;S TIME! 💕
+                            </motion.p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-4 gap-2">
+                            {stats.map((stat, i) => (
+                                <div key={i} className="flex flex-col items-center">
+                                    <motion.div
+                                        key={stat.value}
+                                        initial={{ y: 5, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        className="text-2xl sm:text-3xl font-black text-white tabular-nums tracking-tighter"
+                                    >
+                                        {String(stat.value).padStart(2, '0')}
+                                    </motion.div>
+                                    <div className="text-[8px] uppercase tracking-widest text-white/30 font-black mt-1">
+                                        {stat.label}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
 
                     <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
                         <span className="text-[10px] text-white/40 italic font-medium">
-                            {session?.user?.anniversaryDate ? "A cosmic appointment" : "Sync your stars"}
+                            {isCelebrated ? "Shared with your love" : (targetDate ? "A cosmic appointment" : "Sync your stars")}
                         </span>
-                        <button
-                            onClick={() => {
-                                setEditDate(session?.user?.anniversaryDate?.split('T')[0] || "");
-                                setEditName(milestoneName);
-                                setIsEditing(true);
-                            }}
-                            className="text-[10px] text-purple-400 font-bold uppercase tracking-widest hover:text-purple-300 cursor-pointer transition-colors"
-                        >
-                            Edit Milestone →
-                        </button>
+                        {!isCelebrated && (
+                             <button
+                                onClick={() => {
+                                    setEditDate(timeLeft.days + timeLeft.hours + timeLeft.minutes + timeLeft.seconds === 0 ? "" : (targetDate?.toISOString().split('T')[0] || ""));
+                                    setEditName(milestoneName);
+                                    setIsEditing(true);
+                                }}
+                                className="text-[10px] text-purple-400 font-bold uppercase tracking-widest hover:text-purple-300 cursor-pointer transition-colors"
+                            >
+                                Edit Milestone →
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -193,7 +256,6 @@ export default function CountdownWidget() {
                                         max="2100-12-31"
                                         onChange={(e) => {
                                             const val = e.target.value;
-                                            // Basic safety for invalid dates or extreme years from manual typing
                                             if (val.length > 10) return;
                                             setEditDate(val);
                                         }}
@@ -222,6 +284,7 @@ export default function CountdownWidget() {
                 )}
             </AnimatePresence>
         </>
-
     );
+}
+
 }
