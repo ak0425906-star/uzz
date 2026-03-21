@@ -190,29 +190,6 @@ export default function MemoryDetailModal({ memory, onClose }) {
                                     {memory.title}
                                 </h2>
                             </div>
-
-                            <div className="flex-1">
-                                <p className="text-lg lg:text-xl text-white/70 leading-relaxed font-medium italic opacity-90 mb-10 border-l border-white/10 pl-6">
-                                    {memory.description || "The silence of the cosmos holds this moment's secret."}
-                                </p>
-
-                                {memory.audioUrl && (
-                                    <div className="p-6 rounded-[2rem] bg-white/5 border border-white/10 mb-8">
-                                        <div className="flex items-center gap-4 mb-6">
-                                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
-                                                <span className="text-lg">🎙️</span>
-                                            </div>
-                                            <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">Audio Memory</p>
-                                        </div>
-                                        <audio controls src={memory.audioUrl} className="w-full h-8 opacity-40 hover:opacity-100 transition-opacity" />
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center">
-                                <button
-                                    onClick={onClose}
-                                    className="px-8 py-3 rounded-full bg-white text-black text-[9px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-xl"
                                 >
                                     CLOSE
                                 </button>
