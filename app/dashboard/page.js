@@ -192,28 +192,6 @@ export default function DashboardPage() {
                         </motion.div>
                     )}
 
-                    {/* Quick Access */}
-                    <div className="md:col-span-3 grid grid-cols-3 md:grid-cols-1 md:grid-rows-1 gap-6">
-                        {[
-                            { href: "/memories", icon: "💫", label: "Timeline" },
-                            { href: "/journal", icon: "📓", label: "Moods" },
-                            { href: "/letters", icon: "💌", label: "Archive" },
-                            { href: "/our-story", icon: "📊", label: "Stats" },
-                        ].map((action, i) => (
-                            <Link key={i} href={action.href} className="md:col-span-1 md:row-span-1">
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: 0.3 + i * 0.1 }}
-                                    whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.05)' }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="h-24 sm:h-full glass-morphism rounded-[2rem] flex items-center justify-center group"
-                                >
-                                    <span className="text-3xl sm:text-4xl group-hover:scale-125 transition-transform duration-500">{action.icon}</span>
-                                </motion.div>
-                            </Link>
-                        ))}
-                    </div>
 
                     {/* Recent Memories */}
                     <motion.div
