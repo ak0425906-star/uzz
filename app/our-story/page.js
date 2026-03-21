@@ -120,7 +120,7 @@ export default function OurStoryPage() {
                             US IN <span className="text-gradient">NUMBERS</span>
                         </h1>
                         <p className="text-xs text-white/30 uppercase tracking-[0.5em] font-black mt-4">
-                            Our love story, quantified ✨
+                            Our UZZ 🌕 story, quantified ✨
                         </p>
                     </motion.div>
                 </header>
@@ -214,7 +214,7 @@ export default function OurStoryPage() {
                         <div className="flex items-center justify-center gap-2 mt-6">
                             <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
                             <p className="text-[9px] text-white/20 uppercase tracking-[0.3em] font-black">
-                                {session?.user?.name}&apos;s Universe
+                                {session?.user?.name}&apos;s UZZ 🌕
                             </p>
                             <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
                         </div>
