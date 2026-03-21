@@ -3,21 +3,18 @@
 @import "tailwindcss";
 
 :root {
-  --primary-glow: #8b5cf6;
-  --secondary-glow: #ec4899;
-  --bg-dark: #060614;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --border-card: rgba(255, 255, 255, 0.08);
+  --primary-glow: #7B61FF; /* Nebula Purple */
+  --secondary-glow: #4DA8FF; /* Cosmic Blue */
+  --accent-glow: #F5F3CE; /* Moon White */
+  --bg-dark: #050505; /* True Space Black */
+  --bg-space: #0B0F1A; /* Space Navy */
+  --bg-card: rgba(255, 255, 255, 0.02);
+  --border-card: rgba(255, 255, 255, 0.05);
 }
 
-[data-theme='rose'] {
-  --primary-glow: #fb7185;
-  --secondary-glow: #e11d48;
-}
-
-[data-theme='aurora'] {
-  --primary-glow: #2dd4bf;
-  --secondary-glow: #22c55e;
+[data-theme='full-moon'] {
+  --primary-glow: #F5F3CE;
+  --secondary-glow: #4DA8FF;
 }
 
 html,

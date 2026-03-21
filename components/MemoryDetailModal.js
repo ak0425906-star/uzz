@@ -43,39 +43,39 @@ export default function MemoryDetailModal({ memory, onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[300] flex items-center justify-center p-0 lg:p-6 bg-[#060614] lg:bg-[#060614]/90 backdrop-blur-2xl"
+            className="fixed inset-0 z-[300] flex items-center justify-center p-0 lg:p-10 bg-[#050505] lg:bg-[#050505]/95 backdrop-blur-3xl"
             onClick={onClose}
         >
             <motion.div
-                initial={{ scale: 0.9, y: 30, opacity: 0 }}
-                animate={{ scale: 1, y: 0, opacity: 1 }}
-                exit={{ scale: 0.9, y: 30, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 25 }}
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full h-full lg:h-auto lg:max-w-6xl glass-morphism border-white/10 rounded-0 lg:rounded-[4rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] max-h-screen lg:max-h-[90vh] flex flex-col lg:flex-row"
+                className="relative w-full h-full lg:h-[85vh] lg:max-w-7xl glass-morphism border-white/10 rounded-0 lg:rounded-[3rem] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.9)] flex flex-col lg:flex-row bg-[#050505]"
             >
-                {/* Visual Section - Multi-Image Gallery */}
-                <div className="w-full lg:w-3/5 h-[60vh] lg:h-auto relative overflow-hidden group flex flex-col bg-black">
+                {/* Visual Section */}
+                <div className="w-full lg:w-[65%] h-[55vh] lg:h-auto relative overflow-hidden group bg-black">
                     <div 
-                        className="flex-1 relative overflow-hidden flex items-center justify-center cursor-pointer"
+                        className="absolute inset-0 flex items-center justify-center cursor-pointer"
                         onClick={() => setShowUI(!showUI)}
                     >
-                        {/* Stories-style Progress Bars */}
+                        {/* Premium Progress Indicators */}
                         <AnimatePresence>
                             {showUI && images.length > 1 && (
                                 <motion.div 
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="absolute top-6 inset-x-6 flex gap-1.5 z-40 transition-opacity"
+                                    className="absolute top-8 inset-x-8 flex gap-2 z-40"
                                 >
                                     {images.map((_, idx) => (
-                                        <div key={idx} className="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
+                                        <div key={idx} className="h-[2px] flex-1 bg-white/10 rounded-full overflow-hidden">
                                             <motion.div 
-                                                className="h-full bg-white"
+                                                className="h-full bg-white shadow-[0_0_8px_white]"
                                                 initial={{ width: 0 }}
                                                 animate={{ width: idx < activeImageIndex ? "100%" : idx === activeImageIndex ? "100%" : "0%" }}
-                                                transition={{ duration: idx === activeImageIndex ? 0.4 : 0 }}
+                                                transition={{ duration: idx === activeImageIndex ? 0.3 : 0 }}
                                             />
                                         </div>
                                     ))}
@@ -86,133 +86,92 @@ export default function MemoryDetailModal({ memory, onClose }) {
                         <AnimatePresence mode="wait">
                             <motion.img
                                 key={activeImageIndex}
-                                initial={{ opacity: 0, x: 50, scale: 1.1 }}
-                                animate={{ opacity: 1, x: 0, scale: 1 }}
-                                exit={{ opacity: 0, x: -50, scale: 0.9 }}
-                                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                                drag="x"
-                                dragConstraints={{ left: 0, right: 0 }}
-                                onDragEnd={(e, { offset, velocity }) => {
-                                    const swipe = offset.x;
-                                    if (swipe < -50) handleNext();
-                                    else if (swipe > 50) handlePrev();
-                                }}
+                                initial={{ opacity: 0, filter: "blur(10px) brightness(0.5)", scale: 1.05 }}
+                                animate={{ opacity: 1, filter: "blur(0px) brightness(1)", scale: 1 }}
+                                exit={{ opacity: 0, filter: "blur(10px) brightness(0.5)", scale: 0.95 }}
+                                transition={{ duration: 0.6 }}
                                 src={images[activeImageIndex]}
-                                alt={memory.title}
-                                className="w-full h-full object-cover lg:object-contain"
+                                className="w-full h-full object-cover lg:object-contain relative z-10"
                             />
                         </AnimatePresence>
                         
-                        {/* Desktop Navigation Arrows */}
-                        <AnimatePresence>
-                            {showUI && images.length > 1 && (
-                                <>
-                                    <motion.button 
-                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                        onClick={handlePrev}
-                                        className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white z-30 hidden lg:flex"
-                                    >
-                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
-                                    </motion.button>
-                                    <motion.button 
-                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                        onClick={handleNext}
-                                        className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white z-30 hidden lg:flex"
-                                    >
-                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-                                    </motion.button>
-                                </>
-                            )}
-                        </AnimatePresence>
-
-                        <AnimatePresence>
-                            {showUI && (
-                                <motion.div 
-                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                    className="absolute inset-0 bg-gradient-to-t from-[#060614] via-transparent to-transparent lg:hidden transition-opacity" 
-                                />
-                            )}
-                        </AnimatePresence>
+                        {/* Subtle Background Glow behind active image */}
+                        <div className="absolute inset-x-20 inset-y-40 bg-white/5 blur-[120px] rounded-full" />
                     </div>
 
-                    {/* Image Selector Thumbnails */}
+                    {/* Navigation Controls */}
                     <AnimatePresence>
                         {showUI && images.length > 1 && (
-                            <motion.div 
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 20 }}
-                                className="absolute bottom-6 inset-x-0 flex justify-center gap-2 px-12 z-40 overflow-x-auto no-scrollbar pb-2 transition-all"
-                            >
-                                {images.map((img, idx) => (
-                                    <motion.button
-                                        key={idx}
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.9 }}
-                                        onClick={(e) => { e.stopPropagation(); setActiveImageIndex(idx); }}
-                                        className={`w-12 h-12 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 shadow-2xl ${
-                                            activeImageIndex === idx ? "border-white scale-110 shadow-white/20" : "border-white/5 opacity-40"
-                                        }`}
-                                    >
-                                        <img src={img} className="w-full h-full object-cover" />
-                                    </motion.button>
-                                ))}
-                            </motion.div>
+                            <div className="hidden lg:block">
+                                <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={handlePrev} className="absolute left-8 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/20 hover:bg-white/10 backdrop-blur-xl border border-white/5 flex items-center justify-center text-white z-50 transition-all">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                </motion.button>
+                                <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={handleNext} className="absolute right-8 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black/20 hover:bg-white/10 backdrop-blur-xl border border-white/5 flex items-center justify-center text-white z-50 transition-all">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                </motion.button>
+                            </div>
                         )}
                     </AnimatePresence>
                 </div>
 
                 {/* Content Section */}
-                <AnimatePresence>
-                    {showUI && (
-                        <motion.div 
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 20, width: 0 }}
-                            className="flex-1 p-8 lg:p-16 flex flex-col overflow-y-auto custom-scrollbar bg-[#060614]/50 relative z-10"
-                        >
-                            <div className="flex justify-between items-start mb-10">
-                                <div className="space-y-4">
-                                    <span className="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-[0.3em] text-white/40">
-                                        {categoryLabels[memory.category] || "☀️ Everyday"}
+                <div className="flex-1 flex flex-col bg-[#080808] border-l border-white/5">
+                    <motion.div 
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="flex-1 p-10 lg:p-14 flex flex-col overflow-y-auto no-scrollbar"
+                    >
+                        <div className="flex justify-between items-start mb-12">
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_white]" />
+                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">
+                                        {categoryLabels[memory.category] || "MOMENT"}
                                     </span>
-                                    <p className="text-[10px] text-white/20 uppercase tracking-[0.4em] font-black">
-                                        {formattedDate.toUpperCase()}
-                                    </p>
                                 </div>
-                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl shadow-inner">
-                                    {memory.mood}
-                                </div>
-                            </div>
-
-                            <div className="mb-8">
-                                <h2 className="text-3xl lg:text-4xl font-black text-white tracking-tighter uppercase italic leading-none">
-                                    {memory.title}
-                                </h2>
-                            </div>
-
-                            <div className="flex-1">
-                                <p className="text-lg lg:text-xl text-white/70 leading-relaxed font-medium italic opacity-90 mb-10 border-l border-white/10 pl-6">
-                                    {memory.description || "The silence of the cosmos holds this moment's secret."}
+                                <p className="text-[10px] text-white/20 uppercase tracking-[0.5em] font-black">
+                                    {formattedDate.toUpperCase()}
                                 </p>
-
                             </div>
-
-                            <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center">
-                                <button
-                                    onClick={onClose}
-                                    className="px-8 py-3 rounded-full bg-white text-black text-[9px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-xl"
-                                >
-                                    CLOSE
-                                </button>
-                                <span className="text-[9px] text-white/10 uppercase tracking-[0.5em] font-black">
-                                    UZZ 🌕
-                                </span>
+                            <div className="w-16 h-16 rounded-2xl glass-morphism border-white/10 flex items-center justify-center text-4xl shadow-2xl">
+                                {memory.mood}
                             </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        </div>
 
+                        <div className="mb-10">
+                            <h2 className="text-4xl lg:text-5xl font-black text-white tracking-tighter uppercase italic leading-none text-glow">
+                                {memory.title}
+                            </h2>
+                        </div>
+
+                        <div className="flex-1 py-4">
+                            <p className="text-xl lg:text-2xl text-white/60 leading-relaxed font-medium italic opacity-90 border-l-2 border-white/10 pl-8 py-2">
+                                {memory.description || "In the vastness of time, this moment remains."}
+                            </p>
+                        </div>
+
+                        <div className="mt-12 pt-10 border-t border-white/5 flex justify-between items-center bg-gradient-to-t from-black/20 to-transparent">
+                            <button
+                                onClick={onClose}
+                                className="px-12 py-4 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-[0.4em] hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                            >
+                                DISMISS
+                            </button>
+                            <span className="text-[10px] text-white/10 uppercase tracking-[0.8em] font-black">
+                                UZZ 🌕 SYSTEM
+                            </span>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Mobile Navigation (Images) */}
+                {images.length > 1 && (
+                    <div className="absolute bottom-6 inset-x-0 flex justify-center gap-2 lg:hidden px-10 pointer-events-none">
+                        {images.map((_, idx) => (
+                            <div key={idx} className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${activeImageIndex === idx ? "bg-white w-4" : "bg-white/20"}`} />
+                        ))}
+                    </div>
+                )}
                 {/* Close handle for mobile */}
                 <button
                     onClick={onClose}

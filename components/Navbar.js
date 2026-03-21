@@ -35,35 +35,36 @@ export default function Navbar() {
 
     return (
         <>
-            {/* Top Navbar: Brand & Interaction (Compact on mobile) */}
-            <nav className="fixed top-0 inset-x-0 z-[100] p-4 sm:p-6 pointer-events-none">
-                <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
-                    {/* Brand Logo */}
-                    <Link href="/dashboard">
+            {/* High-End Floating Navbar */}
+            <nav className="fixed top-8 inset-x-0 z-[100] px-6 pointer-events-none">
+                <div className="max-w-5xl mx-auto flex items-center justify-between pointer-events-auto glass-morphism p-2 rounded-full border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] bg-black/20 backdrop-blur-2xl">
+                    
+                    {/* Brand */}
+                    <Link href="/dashboard" className="ml-2">
                         <motion.div
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="glass-morphism px-6 py-3 rounded-full flex items-center gap-3 border-white/5 active:bg-white/10 transition-colors"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex items-center gap-3 px-4 py-2 rounded-full hover:bg-white/5 transition-colors"
                         >
-                            <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 shadow-[0_0_10px_rgba(168,85,247,0.5)] animate-pulse" />
-                            <span className="text-xs font-black uppercase tracking-[0.4em] text-white/90">
+                            <div className="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_white] animate-pulse" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white">
                                 UZZ 🌕
                             </span>
                         </motion.div>
                     </Link>
 
-                    {/* Desktop Navigation Only */}
-                    <div className="hidden md:flex items-center gap-2 glass-morphism p-1.5 rounded-full border-white/5">
+                    {/* Desktop Menu - Minimalist */}
+                    <div className="hidden md:flex items-center gap-1">
                         {navLinks.map((link) => (
                             <Link key={link.href} href={link.href}>
-                                <div className={`px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative ${isActive(link.href)
+                                <div className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative ${isActive(link.href)
                                     ? "text-black"
-                                    : "text-white/40 hover:text-white/80"
+                                    : "text-white/40 hover:text-white"
                                     }`}>
                                     {isActive(link.href) && (
                                         <motion.div
-                                            layoutId="nav-pill"
-                                            className="absolute inset-0 bg-white rounded-full"
+                                            layoutId="nav-pill-premium"
+                                            className="absolute inset-0 bg-white rounded-full shadow-lg"
                                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                         />
                                     )}
@@ -73,51 +74,39 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    {/* Interaction Section */}
-                    <div className="flex items-center gap-3">
-                        <div className="glass-morphism p-1.5 rounded-full border-white/5 flex items-center gap-1">
-                            <HeartPulse />
-                            <div className="hidden sm:flex items-center gap-1">
-                                <ThemeSwitcher />
-                                <div className="w-px h-6 bg-white/10 mx-1" />
-                            </div>
-
-                            <div className="hidden sm:flex items-center px-4 py-2 bg-white/5 rounded-full">
-                                <span className="text-[11px] font-black uppercase tracking-widest text-white/40">
-                                    {session?.user?.name}
-                                </span>
-                            </div>
-
-                            <button
-                                onClick={() => signOut({ callbackUrl: "/" })}
-                                className="w-10 h-10 flex items-center justify-center rounded-full text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-all group"
-                                title="Sign Out"
-                            >
-                                <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                            </button>
+                    {/* Action Section */}
+                    <div className="flex items-center gap-2 mr-2">
+                         <div className="hidden sm:block">
+                            <ThemeSwitcher />
                         </div>
+                        <div className="w-px h-6 bg-white/10 mx-1 hidden sm:block" />
+                        
+                        <button
+                            onClick={() => signOut({ callbackUrl: "/" })}
+                            className="w-10 h-10 flex items-center justify-center rounded-full text-white/20 hover:text-white hover:bg-white/5 transition-all group"
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </nav>
 
-            {/* Mobile Bottom Navigation - iPhone Style Tab Bar */}
-            <div className="md:hidden fixed bottom-6 inset-x-6 z-[200] glass-morphism rounded-[2.5rem] border-white/10 p-2 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/5 pointer-events-auto overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+            {/* Mobile Bottom Navigation - Minimal Cosmic Style */}
+            <div className="md:hidden fixed bottom-8 inset-x-8 z-[200] glass-morphism rounded-[3rem] border-white/10 p-2 flex items-center justify-around shadow-[0_30px_60px_rgba(0,0,0,0.6)] ring-1 ring-white/5 pointer-events-auto">
                 {navLinks.map((link) => (
-                    <Link key={link.href} href={link.href} className="flex-1 relative z-10">
+                    <Link key={link.href} href={link.href} className="flex-1 relative">
                         <motion.div
                             whileTap={{ scale: 0.9 }}
-                            className={`flex flex-col items-center justify-center gap-1 py-2 transition-colors duration-300 ${isActive(link.href) ? "text-white" : "text-white/25 hover:text-white/50"
+                            className={`flex flex-col items-center justify-center gap-1.5 py-3 transition-all duration-500 ${isActive(link.href) ? "text-white" : "text-white/20"
                                 }`}
                         >
-                            <span className="text-xl sm:text-2xl">{link.icon}</span>
-                            <span className="text-[8px] font-black uppercase tracking-[0.2em]">{link.label}</span>
+                            <span className="text-xl">{link.icon}</span>
                             {isActive(link.href) && (
                                 <motion.div
-                                    layoutId="mobile-nav-pill"
-                                    className="w-1 h-1 bg-white rounded-full mt-1.5"
+                                    layoutId="mobile-dot-premium"
+                                    className="w-1 h-1 bg-white rounded-full shadow-[0_0_8px_white]"
                                 />
                             )}
                         </motion.div>

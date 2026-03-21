@@ -30,67 +30,66 @@ export default function MemoryCard({ memory, onDelete, onView, index }) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1, duration: 0.8 }}
-            whileHover={{ y: -8, scale: 1.02 }}
-            className={`group relative overflow-hidden rounded-[2.5rem] glass-morphism p-4 sm:p-5 border-white/5 transition-all duration-700`}
+            whileHover={{ y: -12, scale: 1.02 }}
+            className="group relative rounded-[2.5rem] glass-morphism p-5 border-white/5 transition-all duration-700 hover:border-white/20 hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] bg-black/10"
         >
-            {/* Background Accent */}
-            <div className={`absolute top-0 right-0 w-32 h-32 blur-[80px] opacity-10 transition-opacity duration-700 group-hover:opacity-20 bg-gradient-to-br ${memory.category === 'milestone' ? 'from-amber-500' :
-                memory.category === 'date' ? 'from-pink-500' :
-                    'from-purple-500'
-                }`} />
+            {/* Pulsing Outer Glow (Invisible until hover) */}
+            <motion.div 
+                className="absolute inset-0 rounded-[2.5rem] bg-white opacity-0 blur-2xl -z-10 group-hover:opacity-[0.03] transition-opacity duration-1000" 
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 4, repeat: Infinity }}
+            />
 
-            {/* Image Section */}
-            <div className="relative mb-5 rounded-[2rem] overflow-hidden aspect-[4/3] bg-[#0a0a1a]">
+            {/* High-End Image Container */}
+            <div className="relative mb-6 rounded-[2rem] overflow-hidden aspect-square bg-[#050505] border border-white/5">
                 <img
                     src={memory.imageUrl || "https://images.unsplash.com/photo-1436891620584-47fd0e565afb?q=80&w=800&auto=format&fit=crop"}
                     alt={memory.title}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    className="w-full h-full object-cover grayscale-[0.2] transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60" />
 
-                {/* Category Badge Over Image */}
-                <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1.5 rounded-full glass bg-black/40 text-xs font-black uppercase tracking-[0.2em] text-white/90">
+                {/* Minimalist Badge */}
+                <div className="absolute inset-x-4 top-4 flex justify-between items-start">
+                    <span className="px-3 py-1 rounded-full glass bg-black/40 text-[9px] font-black uppercase tracking-[0.3em] text-white/50 border border-white/5">
                         {categoryLabels[memory.category] || "☀️ Everyday"}
                     </span>
-                </div>
-
-                {/* Mood Indicator */}
-                <div className="absolute top-4 right-4 w-10 h-10 rounded-full glass bg-black/40 flex items-center justify-center text-xl">
-                    {memory.mood}
+                    <div className="w-8 h-8 rounded-full glass bg-black/40 flex items-center justify-center text-sm border border-white/5">
+                        {memory.mood}
+                    </div>
                 </div>
             </div>
 
-            {/* Content Section */}
-            <div className="px-2">
-                <div className="flex items-center gap-2 mb-2">
-                    <p className="text-xs font-black text-white/30 uppercase tracking-[0.2em]">
-                        {new Date(memory.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+            {/* Content Overhaul */}
+            <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-1 h-1 rounded-full bg-white shadow-[0_0_8px_white]" />
+                    <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">
+                        {new Date(memory.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </p>
                 </div>
 
-                <h3 className="text-xl font-black text-white mb-2 tracking-tight group-hover:text-purple-300 transition-colors">
+                <h3 className="text-xl font-black text-white px-1 tracking-tight group-hover:text-glow transition-all">
                     {memory.title}
                 </h3>
 
                 {memory.description && (
-                    <p className="text-sm text-white/40 leading-relaxed line-clamp-2 mb-6 italic">
-                        "{memory.description}"
+                    <p className="text-[11px] text-white/25 leading-relaxed line-clamp-2 px-1 font-medium tracking-wide">
+                        {memory.description}
                     </p>
                 )}
 
                 {/* Footer Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                <div className="flex items-center justify-between pt-6 mt-4 border-t border-white/5">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
                             onView && onView(memory);
                         }}
-                        className="text-xs font-black uppercase tracking-[0.3em] text-white/60 hover:text-white transition-colors"
+                        className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 hover:text-white transition-all ml-1 group/btn"
                     >
-                        Explore →
+                        EXPLORE <span className="inline-block transition-transform group-hover/btn:translate-x-1">→</span>
                     </button>
-
 
                     {onDelete && (
                         <button

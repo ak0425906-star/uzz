@@ -149,14 +149,14 @@ export default function MemoriesPage() {
                 </motion.div>
 
 
-                {/* Grid */}
+                {/* Constellation Timeline */}
                 {filteredMemories.length === 0 ? (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         className="text-center py-32 rounded-[4rem] glass-morphism border-white/5 relative overflow-hidden"
                     >
-                        <div className="absolute inset-0 bg-purple-500/5 blur-3xl rounded-full translate-y-1/2" />
+                        <div className="absolute inset-0 bg-white/5 blur-3xl rounded-full translate-y-1/2" />
                         <span className="text-7xl block mb-8 grayscale opacity-50">📸</span>
                         <h3 className="text-2xl text-white font-black uppercase tracking-tighter italic mb-4">
                             {filter !== "all" ? `No ${filter} moments FOUND` : "The void is waiting"}
@@ -166,22 +166,44 @@ export default function MemoriesPage() {
                         </p>
                         <button
                             onClick={() => setShowForm(true)}
-                            className="px-8 py-3 rounded-full border border-purple-500/30 text-[10px] font-black uppercase tracking-widest text-purple-400 hover:bg-purple-500/10 transition-all"
+                            className="px-8 py-3 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/40 hover:bg-white/5 transition-all"
                         >
                             Capture First Light ✨
                         </button>
                     </motion.div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8 mb-20">
-                        {filteredMemories.map((memory, index) => (
-                            <MemoryCard
-                                key={memory._id}
-                                memory={memory}
-                                index={index}
-                                onDelete={handleDelete}
-                                onView={(mem) => setSelectedMemory(mem)}
-                            />
-                        ))}
+                    <div className="relative">
+                        {/* Central Constellation Line */}
+                        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-white/20 via-white/5 to-transparent hidden md:block lg:block" />
+                        
+                        <div className="space-y-24 md:space-y-40">
+                            {filteredMemories.map((memory, index) => (
+                                <div key={memory._id} className={`flex flex-col md:flex-row items-center gap-12 md:gap-0 ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}>
+                                    {/* Card */}
+                                    <div className="w-full md:w-[45%]">
+                                        <MemoryCard
+                                            memory={memory}
+                                            index={index}
+                                            onDelete={handleDelete}
+                                            onView={(mem) => setSelectedMemory(mem)}
+                                        />
+                                    </div>
+
+                                    {/* Timeline Node */}
+                                    <div className="relative flex items-center justify-center w-full md:w-[10%]">
+                                        <motion.div 
+                                            initial={{ scale: 0 }}
+                                            whileInView={{ scale: 1 }}
+                                            className="w-4 h-4 rounded-full bg-white shadow-[0_0_20px_white] z-20"
+                                        />
+                                        <div className="absolute w-[400px] h-px bg-gradient-to-r from-transparent via-white/10 to-transparent scale-x-150 rotate-[15deg] opacity-20 hidden md:block" />
+                                    </div>
+
+                                    {/* Empty Space for balancing */}
+                                    <div className="hidden md:block md:w-[45%]" />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
