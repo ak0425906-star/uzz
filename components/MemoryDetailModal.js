@@ -1,8 +1,10 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 export default function MemoryDetailModal({ memory, onClose }) {
+    const [activeImageIndex, setActiveImageIndex] = useState(0);
     if (!memory) return null;
 
     const formattedDate = new Date(memory.date).toLocaleDateString("en-US", {
@@ -36,15 +38,44 @@ export default function MemoryDetailModal({ memory, onClose }) {
                 onClick={(e) => e.stopPropagation()}
                 className="relative w-full max-w-6xl glass-morphism border-white/10 rounded-[4rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] max-h-[90vh] flex flex-col lg:flex-row"
             >
-                {/* Visual Section */}
-                <div className="w-full lg:w-3/5 h-[400px] lg:h-auto overflow-hidden relative group">
-                    <img
-                        src={memory.imageUrl || "https://images.unsplash.com/photo-1436891620584-47fd0e565afb?q=80&w=1200&auto=format&fit=crop"}
-                        alt={memory.title}
-                        className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#060614] via-transparent to-transparent lg:hidden" />
-                    <div className="absolute inset-x-0 bottom-0 p-12 hidden lg:block bg-gradient-to-t from-black/80 to-transparent">
+                {/* Visual Section - Multi-Image Gallery */}
+                <div className="w-full lg:w-3/5 h-[400px] lg:h-auto relative overflow-hidden group flex flex-col">
+                    <div className="flex-1 relative overflow-hidden">
+                        <AnimatePresence mode="wait">
+                            <motion.img
+                                key={activeImageIndex}
+                                initial={{ opacity: 0, scale: 1.1 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.6 }}
+                                src={(memory.images && memory.images.length > 0) ? memory.images[activeImageIndex] : memory.imageUrl || "https://images.unsplash.com/photo-1436891620584-47fd0e565afb?q=80&w=1200&auto=format&fit=crop"}
+                                alt={memory.title}
+                                className="w-full h-full object-cover"
+                            />
+                        </AnimatePresence>
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#060614] via-transparent to-transparent lg:hidden" />
+                    </div>
+
+                    {/* Image Selector Thumbnails */}
+                    {memory.images && memory.images.length > 1 && (
+                        <div className="absolute bottom-10 inset-x-0 flex justify-center gap-3 px-12 z-20 overflow-x-auto no-scrollbar pb-2">
+                            {memory.images.map((img, idx) => (
+                                <motion.button
+                                    key={idx}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={() => setActiveImageIndex(idx)}
+                                    className={`w-14 h-14 rounded-2xl overflow-hidden border-2 transition-all flex-shrink-0 shadow-2xl ${
+                                        activeImageIndex === idx ? "border-purple-500 scale-110" : "border-white/10 opacity-60"
+                                    }`}
+                                >
+                                    <img src={img} className="w-full h-full object-cover" />
+                                </motion.button>
+                            ))}
+                        </div>
+                    )}
+                    
+                    <div className="absolute inset-x-0 bottom-0 p-12 hidden lg:block bg-gradient-to-t from-black/90 via-black/20 to-transparent">
                         <p className="text-[10px] text-white/40 uppercase tracking-[0.6em] font-black mb-2 italic">Celestial Archive</p>
                         <h3 className="text-4xl font-black text-white tracking-tighter uppercase italic">{memory.title}</h3>
                     </div>

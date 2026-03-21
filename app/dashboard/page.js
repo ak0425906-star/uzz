@@ -205,23 +205,12 @@ export default function DashboardPage() {
                         </motion.div>
                     )}
 
-                    {/* Quick Message Feed */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="md:col-span-3 md:row-span-2 glass-morphism rounded-[2.5rem] p-6 sm:p-8 flex flex-col relative overflow-hidden group"
-                    >
-                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full group-hover:bg-purple-500/20 transition-all duration-700" />
-                        <MessageFeed />
-                    </motion.div>
-
-                    {/* Recent Memories */}
+                    {/* Recent Memories - Wide */}
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className="md:col-span-8 md:row-span-2 glass-morphism rounded-[3rem] p-8 sm:p-10 overflow-hidden relative"
+                        className="md:col-span-9 md:row-span-2 glass-morphism rounded-[3rem] p-8 sm:p-10 overflow-hidden relative"
                     >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
                             <div>
@@ -250,8 +239,8 @@ export default function DashboardPage() {
                                     >
                                         <div className="flex items-center gap-6 p-2">
                                             <div className="w-24 h-24 rounded-[2rem] overflow-hidden flex-shrink-0 bg-[#0a0a1a] shadow-2xl relative">
-                                                {mem.imageUrl ? (
-                                                    <img src={mem.imageUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                                {(mem.images?.length > 0 || mem.imageUrl) ? (
+                                                    <img src={mem.images?.[0] || mem.imageUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-4xl opacity-40">{mem.mood}</div>
                                                 )}

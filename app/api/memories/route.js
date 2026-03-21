@@ -39,11 +39,13 @@ export const POST = withAuth(async (req, { user }) => {
         category: { enum: CATEGORIES },
         mood: { enum: MOODS },
         imageUrl: { maxLength: 500 },
+        images: { type: "array" },
         audioUrl: { maxLength: 500 },
     });
 
     const memory = await Memory.create({
         ...validated,
+        images: body.images || [], // Explicitly handle images array from body
         userId: user.id,
         coupleId: user.coupleId,
     });

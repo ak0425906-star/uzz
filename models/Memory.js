@@ -19,6 +19,10 @@ const MemorySchema = new mongoose.Schema(
             type: String,
             default: "",
         },
+        images: {
+            type: [String],
+            default: [],
+        },
         audioUrl: {
             type: String,
             default: "",

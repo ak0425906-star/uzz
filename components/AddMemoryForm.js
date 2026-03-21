@@ -12,6 +12,7 @@ export default function AddMemoryForm({ onAdd, onClose }) {
         category: "everyday",
         mood: "❤️",
         imageUrl: "",
+        images: [],
         audioUrl: "",
     });
     const [uploading, setUploading] = useState(false);
@@ -27,22 +28,29 @@ export default function AddMemoryForm({ onAdd, onClose }) {
     ];
 
     const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
 
         setUploading(true);
-        const formData = new FormData();
-        formData.append("file", file);
+        const uploadedUrls = [];
 
         try {
-            const res = await fetch("/api/upload", {
-                method: "POST",
-                body: formData,
-            });
-            const data = await res.json();
-            if (data.url) {
-                setForm((prev) => ({ ...prev, imageUrl: data.url }));
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append("file", file);
+                const res = await fetch("/api/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+                const data = await res.json();
+                if (data.url) uploadedUrls.push(data.url);
             }
+            
+            setForm((prev) => ({ 
+                ...prev, 
+                images: [...(prev.images || []), ...uploadedUrls],
+                imageUrl: uploadedUrls[0] || prev.imageUrl // Keep first for backward compatibility
+            }));
         } catch (err) {
             console.error("Upload failed:", err);
         } finally {
@@ -188,33 +196,40 @@ export default function AddMemoryForm({ onAdd, onClose }) {
 
                     {/* Image upload */}
                     <div>
-                        <label className="block text-base font-bold text-white/80 mb-2">
-                            Photo (optional)
+                        <label className="block text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-4">
+                            Photo Gallery ({form.images?.length || 0})
                         </label>
-                        <div className="flex items-center gap-4">
-                            <label className="flex-1 flex items-center justify-center px-4 py-4 rounded-2xl bg-white/5 border border-dashed border-white/20 text-white/40 hover:border-purple-500/40 hover:text-white/60 cursor-pointer transition-all">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                />
-                                {uploading
-                                    ? "⏳ Uploading..."
-                                    : form.imageUrl
-                                        ? "✅ Photo added"
-                                        : "📷 Choose a photo"}
-                            </label>
-                            {form.imageUrl && (
-                                <div className="w-16 h-16 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
-                                    <img
-                                        src={form.imageUrl}
-                                        alt="Preview"
-                                        className="w-full h-full object-cover"
-                                    />
+                        <div className="grid grid-cols-4 gap-4">
+                            {form.images?.map((url, i) => (
+                                <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-white/10 relative group shadow-2xl">
+                                    <img src={url} alt="" className="w-full h-full object-cover" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
+                                        className="absolute inset-0 bg-red-500/80 items-center justify-center hidden group-hover:flex text-white font-bold"
+                                    >
+                                        ✕
+                                    </button>
                                 </div>
+                            ))}
+                            
+                            {(!form.images || form.images.length < 10) && (
+                                <label className="aspect-square rounded-2xl bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center text-white/20 hover:border-purple-500/40 hover:text-white/40 cursor-pointer transition-all">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                    />
+                                    <span className="text-2xl mb-1">+</span>
+                                    <span className="text-[8px] font-black uppercase tracking-widest text-center">Add<br/>Photo</span>
+                                </label>
                             )}
                         </div>
+                        {uploading && (
+                             <p className="text-[10px] text-purple-400 font-bold uppercase tracking-widest mt-4 animate-pulse">⏳ Transmitting to the cloud...</p>
+                        )}
                     </div>
 
                     <VoiceRecorder onUploadComplete={(url) => setForm(prev => ({ ...prev, audioUrl: url }))} />

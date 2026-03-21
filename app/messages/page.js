@@ -147,9 +147,10 @@ export default function MessagesPage() {
                     </div>
                     <motion.button
                         whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.05 }}
                         type="submit"
                         disabled={loading || !input.trim()}
-                        className="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center shadow-lg disabled:opacity-20 transition-opacity"
+                        className="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.3)] disabled:opacity-20 transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] active:shadow-inner"
                     >
                          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current rotate-90 scale-x-[-1]">
                             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
