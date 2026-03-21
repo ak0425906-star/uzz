@@ -11,6 +11,7 @@ export default function MessagesPage() {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
+    const [partnerName, setPartnerName] = useState("Partner");
     const scrollRef = useRef(null);
 
     const fetchMessages = async () => {
@@ -19,6 +20,12 @@ export default function MessagesPage() {
             if (res.ok) {
                 const data = await res.json();
                 setMessages(data.messages || []);
+                
+                // Try to find partner name from messages if not set
+                if (partnerName === "Partner" && data.messages?.length > 0) {
+                    const otherMsg = data.messages.find(m => m.userId !== session?.user?.id);
+                    if (otherMsg) setPartnerName(otherMsg.authorName);
+                }
             }
         } catch (err) {
             console.error("Failed to fetch messages:", err);
@@ -27,13 +34,14 @@ export default function MessagesPage() {
 
     useEffect(() => {
         fetchMessages();
-        const interval = setInterval(fetchMessages, 5000); // Faster polling for full page
+        const interval = setInterval(fetchMessages, 4000); 
         return () => clearInterval(interval);
-    }, []);
+    }, [session]);
 
+    // Scroll to bottom on load and new messages
     useEffect(() => {
         if (scrollRef.current) {
-            scrollRef.current.scrollTop = 0;
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages]);
 
@@ -62,94 +70,91 @@ export default function MessagesPage() {
     };
 
     return (
-        <div className="relative min-h-screen bg-[#060614] pt-24 pb-12 px-4 overflow-hidden flex flex-col">
+        <div className="fixed inset-0 bg-[#060614] flex flex-col overflow-hidden">
             <StarField />
 
-            <div className="relative z-10 max-w-4xl mx-auto w-full flex-1 flex flex-col">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                        <Link href="/dashboard">
-                            <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all cursor-pointer"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
-                                </svg>
-                            </motion.div>
-                        </Link>
-                        <div>
-                            <h1 className="text-4xl font-black text-white tracking-tighter italic uppercase">
-                                COSMIC <span className="text-gradient">CHAT</span>
-                            </h1>
-                            <p className="text-[10px] text-white/30 uppercase tracking-[0.4em] font-black mt-1">
-                                A private channel in UZZ 🌕
-                            </p>
+            {/* Sticky Mobile Header */}
+            <div className="relative z-[110] bg-[#060614]/80 backdrop-blur-2xl border-b border-white/5 px-4 pt-12 pb-4 flex items-center gap-4 shadow-2xl">
+                <Link href="/dashboard">
+                    <motion.div
+                        whileTap={{ scale: 0.9 }}
+                        className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/60"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </motion.div>
+                </Link>
+                
+                <div className="flex-1 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center font-black text-xs shadow-lg shadow-purple-500/20">
+                        {partnerName[0]?.toUpperCase()}
+                    </div>
+                    <div>
+                        <h1 className="text-sm font-black text-white uppercase tracking-widest">{partnerName}</h1>
+                        <div className="flex items-center gap-1.5 font-bold">
+                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                            <span className="text-[9px] text-white/30 uppercase tracking-tighter">Connected in Outer Space</span>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Messages Container */}
-                <div className="flex-1 glass-morphism rounded-[3rem] p-6 sm:p-10 mb-6 flex flex-col relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 blur-[100px] rounded-full" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/5 blur-[100px] rounded-full" />
+            {/* Chat Body */}
+            <div 
+                ref={scrollRef}
+                className="flex-1 overflow-y-auto px-4 py-6 space-y-4 custom-scrollbar relative z-10 flex flex-col"
+            >
+                <div className="flex-1" /> {/* Spacer to push messages to bottom if few */}
+                <AnimatePresence initial={false}>
+                    {[...messages].reverse().map((msg, i) => (
+                        <motion.div
+                            key={msg._id}
+                            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            className={`flex ${msg.userId === session?.user?.id ? "justify-end" : "justify-start"}`}
+                        >
+                            <div className={`max-w-[85%] group`}>
+                                <div className={`px-5 py-3.5 rounded-[1.8rem] text-sm font-medium shadow-xl transition-all ${
+                                    msg.userId === session?.user?.id 
+                                    ? "bg-gradient-to-br from-purple-600 to-indigo-700 text-white rounded-br-sm shadow-purple-900/20" 
+                                    : "bg-white/10 border border-white/5 text-white/90 rounded-bl-sm backdrop-blur-md"
+                                }`}>
+                                    {msg.content}
+                                </div>
+                                <div className={`flex items-center gap-2 mt-1 px-2 ${msg.userId === session?.user?.id ? "justify-end" : "justify-start"}`}>
+                                    <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">
+                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+            </div>
 
-                    <div 
-                        ref={scrollRef}
-                        className="flex-1 overflow-y-auto space-y-6 custom-scrollbar pr-4 flex flex-col-reverse"
-                    >
-                        <AnimatePresence initial={false}>
-                            {messages.map((msg) => (
-                                <motion.div
-                                    key={msg._id}
-                                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    className={`flex ${msg.userId === session?.user?.id ? "justify-end" : "justify-start"}`}
-                                >
-                                    <div className={`max-w-[80%] sm:max-w-[70%] space-y-2`}>
-                                        <div className={`flex items-center gap-2 mb-1 ${msg.userId === session?.user?.id ? "justify-end" : "justify-start"}`}>
-                                            <span className="text-[8px] font-black text-white/20 uppercase tracking-widest leading-none">
-                                                {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </span>
-                                            <span className="text-[8px] font-black text-purple-400 uppercase tracking-widest leading-none">
-                                                {msg.userId === session?.user?.id ? "YOU" : msg.authorName}
-                                            </span>
-                                        </div>
-                                        <div className={`p-4 sm:p-6 rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl relative group ${
-                                            msg.userId === session?.user?.id 
-                                            ? "bg-gradient-to-br from-purple-600/20 to-indigo-600/30 border border-purple-500/30 text-white rounded-tr-none" 
-                                            : "bg-white/5 border border-white/10 text-white/90 rounded-tl-none"
-                                        }`}>
-                                            <p className="text-sm sm:text-base font-medium leading-relaxed">{msg.content}</p>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+            {/* Sticky Input Footer */}
+            <div className="relative z-[110] bg-[#060614]/80 backdrop-blur-2xl border-t border-white/5 px-4 pt-4 pb-10">
+                <form onSubmit={sendMessage} className="relative flex items-center gap-3">
+                    <div className="flex-1 relative">
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Message..."
+                            className="w-full bg-white/5 border border-white/10 rounded-[1.5rem] py-3.5 pl-5 pr-12 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-all font-medium placeholder:text-white/20"
+                        />
                     </div>
-                </div>
-
-                {/* Input Area */}
-                <form 
-                    onSubmit={sendMessage}
-                    className="relative"
-                >
-                    <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder="Type a message to your love..."
-                        className="w-full bg-white/5 border border-white/10 rounded-full py-6 pl-8 pr-24 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-all font-medium placeholder:text-white/10 backdrop-blur-xl"
-                    />
-                    <button
+                    <motion.button
+                        whileTap={{ scale: 0.9 }}
                         type="submit"
                         disabled={loading || !input.trim()}
-                        className="absolute right-3 top-2.5 bottom-2.5 px-8 bg-white text-black rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all active:scale-95 disabled:opacity-20 shadow-xl shadow-white/5"
+                        className="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center shadow-lg disabled:opacity-20 transition-opacity"
                     >
-                        SEND
-                    </button>
+                         <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current rotate-90 scale-x-[-1]">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                        </svg>
+                    </motion.button>
                 </form>
             </div>
         </div>
