@@ -144,10 +144,34 @@ export default function MemoryDetailModal({ memory, onClose }) {
                             </h2>
                         </div>
 
-                        <div className="flex-1 py-4">
+                        <div className="flex-1 py-4 space-y-8">
                             <p className="text-xl lg:text-2xl text-white/60 leading-relaxed font-medium italic opacity-90 border-l-2 border-white/10 pl-8 py-2">
                                 {memory.description || "In the vastness of time, this moment remains."}
                             </p>
+
+                            {memory.audioUrl && (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="p-6 rounded-3xl bg-white/5 border border-white/10 overflow-hidden relative group"
+                                >
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-14 h-14 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/40 relative">
+                                            <span className="text-2xl">⚡</span>
+                                            <div className="absolute inset-0 rounded-full border border-purple-500/50 animate-ping opacity-20" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-[10px] font-black text-purple-400 uppercase tracking-[0.3em] mb-3">COSMIC ECHO PLAYING</p>
+                                            <audio 
+                                                src={memory.audioUrl} 
+                                                controls 
+                                                className="w-full h-10 custom-audio-player opacity-80 hover:opacity-100 transition-opacity" 
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-purple-500/5 blur-3xl rounded-full" />
+                                </motion.div>
+                            )}
                         </div>
 
                         <div className="mt-12 pt-10 border-t border-white/5 flex justify-between items-center bg-gradient-to-t from-black/20 to-transparent">

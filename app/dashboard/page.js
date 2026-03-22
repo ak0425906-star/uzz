@@ -17,6 +17,8 @@ import MessageFeed from "@/components/MessageFeed";
 import SOSWidget from "@/components/SOSWidget";
 import CelestialCalendar from "@/components/CelestialCalendar";
 import NebulaMood from "@/components/NebulaMood";
+import MilestonesWidget from "@/components/MilestonesWidget";
+import MilestoneCelebration from "@/components/MilestoneCelebration";
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
@@ -25,6 +27,7 @@ export default function DashboardPage() {
     const [recentMemories, setRecentMemories] = useState([]);
     const [insights, setInsights] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [celebratedRank, setCelebratedRank] = useState(null);
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -78,6 +81,35 @@ export default function DashboardPage() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (stats.memories > 0 || daysTogether > 0) {
+            const RANKS = [
+                { title: "Star Dust", icon: "✨", minDays: 0, minMemories: 0 },
+                { title: "Neophyte Stargazers", icon: "🔭", minDays: 30, minMemories: 10 },
+                { title: "Binary System", icon: "♊", minDays: 90, minMemories: 50 },
+                { title: "Constellation Creators", icon: "🎨", minDays: 180, minMemories: 100 },
+                { title: "Supernova Pair", icon: "💥", minDays: 365, minMemories: 250 },
+                { title: "Universal Legends", icon: "🌌", minDays: 730, minMemories: 500 },
+            ];
+
+            let currentRankIndex = 0;
+            for (let i = RANKS.length - 1; i >= 0; i--) {
+                if (daysTogether >= RANKS[i].minDays || stats.memories >= RANKS[i].minMemories) {
+                    currentRankIndex = i;
+                    break;
+                }
+            }
+
+            const currentRank = RANKS[currentRankIndex];
+            const lastSeenRank = localStorage.getItem("lastSeenRank");
+
+            if (lastSeenRank !== currentRank.title && currentRankIndex > 0) {
+                setCelebratedRank(currentRank);
+                localStorage.setItem("lastSeenRank", currentRank.title);
+            }
+        }
+    }, [stats.memories, daysTogether]);
 
     if (status === "loading" || loading) {
         return (
@@ -152,27 +184,23 @@ export default function DashboardPage() {
                         <LoveJar />
                     </motion.div>
 
-                    {/* Stats - Wide Small */}
+                    {/* Milestones Celebrations */}
+                    <MilestoneCelebration 
+                        rankTitle={celebratedRank?.title} 
+                        rankIcon={celebratedRank?.icon} 
+                    />
+
+                    {/* Stats / Milestones - Wide Small */}
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="md:col-span-5 md:row-span-1 glass-morphism rounded-[2.5rem] p-6 sm:p-8 flex items-center justify-around gap-4"
+                        className="md:col-span-5 md:row-span-1 glass-morphism rounded-[2.5rem] p-6 sm:p-8 relative overflow-hidden group"
                     >
-                        <div className="text-center">
-                            <p className="text-3xl md:text-5xl font-black text-white">{stats.memories}</p>
-                            <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] font-black mt-1">Moments</p>
-                        </div>
-                        <div className="h-10 w-px bg-white/10" />
-                        <div className="text-center">
-                            <p className="text-3xl md:text-5xl font-black text-white">{daysTogether}</p>
-                            <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] font-black mt-1">Days Together</p>
-                        </div>
-                        <div className="h-10 w-px bg-white/10" />
-                        <div className="text-center">
-                            <p className="text-3xl md:text-5xl font-black text-white">{stats.letters}</p>
-                            <p className="text-[11px] text-white/40 uppercase tracking-[0.2em] font-black mt-1">Letters</p>
-                        </div>
+                        <MilestonesWidget 
+                            daysTogether={daysTogether} 
+                            totalMemories={stats.memories} 
+                        />
                     </motion.div>
 
                     {/* SOS Widget */}

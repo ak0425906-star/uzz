@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import VoiceVault from "./VoiceVault";
 
 export default function AddMemoryForm({ onAdd, onClose }) {
     const [form, setForm] = useState({
@@ -229,6 +230,14 @@ export default function AddMemoryForm({ onAdd, onClose }) {
                         {uploading && (
                              <p className="text-[10px] text-purple-400 font-bold uppercase tracking-widest mt-4 animate-pulse">⏳ Transmitting to the cloud...</p>
                         )}
+                    </div>
+
+                    {/* Voice Echo */}
+                    <div className="pt-4">
+                        <VoiceVault 
+                            initialAudioUrl={form.audioUrl}
+                            onUploadComplete={(url) => setForm(prev => ({ ...prev, audioUrl: url }))}
+                        />
                     </div>
 
 

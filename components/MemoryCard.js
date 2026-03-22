@@ -54,6 +54,15 @@ export default function MemoryCard({ memory, onDelete, onView, index }) {
                     <span className="px-3 py-1 rounded-full glass bg-black/40 text-[9px] font-black uppercase tracking-[0.3em] text-white/50 border border-white/5">
                         {categoryLabels[memory.category] || "☀️ Everyday"}
                     </span>
+                    {memory.audioUrl && (
+                        <div className="px-3 py-1 rounded-full glass bg-purple-500/20 text-[8px] font-black uppercase tracking-[0.2em] text-purple-300 border border-purple-500/30 flex items-center gap-1.5 animate-pulse">
+                            <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-purple-500"></span>
+                            </span>
+                            ECHO
+                        </div>
+                    )}
                     <div className="w-8 h-8 rounded-full glass bg-black/40 flex items-center justify-center text-sm border border-white/5">
                         {memory.mood}
                     </div>
