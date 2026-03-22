@@ -6,19 +6,19 @@ import StarField from "@/components/StarField";
 import Link from "next/link";
 import Image from "next/image";
 
-const MOOD_COLORS = {
-    Happy: "rgba(236, 72, 153, 0.5)", // Pink
-    Love: "rgba(219, 39, 119, 0.5)", // Fuchsia
-    Excited: "rgba(245, 158, 11, 0.5)", // Amber
-    Calm: "rgba(20, 184, 166, 0.5)", // Teal
-    Peaceful: "rgba(59, 130, 246, 0.5)", // Blue
-    Sad: "rgba(79, 70, 229, 0.5)", // Indigo
-    Reflective: "rgba(139, 92, 246, 0.5)", // Violet
+const MOOD_PLANETS = {
+    Happy: "radial-gradient(circle at 30% 30%, #fde047, #ca8a04)", // Sun-like / Golden
+    Love: "radial-gradient(circle at 30% 30%, #f472b6, #be185d)", // Pink / Deep Rose
+    Excited: "radial-gradient(circle at 30% 30%, #fb923c, #c2410c)", // Orange / Fire
+    Calm: "radial-gradient(circle at 30% 30%, #2dd4bf, #0f766e)", // Teal / Ocean
+    Peaceful: "radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8)", // Blue / Earth-like
+    Sad: "radial-gradient(circle at 30% 30%, #818cf8, #4338ca)", // Indigo / Deep Space
+    Reflective: "radial-gradient(circle at 30% 30%, #a78bfa, #6d28d9)", // Violet / Nebula
 };
 
-export default function StarMapPage() {
+export default function SolarSystemMap() {
     const [memories, setMemories] = useState([]);
-    const [selectedStar, setSelectedStar] = useState(null);
+    const [selectedMemory, setSelectedMemory] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -27,20 +27,27 @@ export default function StarMapPage() {
                 const res = await fetch("/api/memories");
                 if (res.ok) {
                     const data = await res.json();
-                    // Assign positions based on ID hash for stability
-                    const mapped = (data.memories || []).map(m => {
+                    
+                    // Assign Orbits & Speeds based on chronologically
+                    const sorted = (data.memories || []).sort((a,b) => new Date(a.date) - new Date(b.date));
+                    const mapped = sorted.map((m, index) => {
                         const hash = m._id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                        // Tiered orbits: start small, get farther out
+                        const orbitDistance = 150 + (index * 60) + (hash % 40); 
+                        const speed = 15 + (index * 5) + (hash % 10); // Seconds for full orbit
                         return {
                             ...m,
-                            x: (hash % 80) + 10,
-                            y: ((hash * 13) % 80) + 10,
-                            size: 10 + (hash % 10), // Even bigger for visibility
+                            orbitDistance,
+                            speed,
+                            startAngle: (hash % 360),
+                            size: 16 + (hash % 12),
+                            isMoon: (hash % 4 === 0 && index > 3) // Every 4th is a moon? Maybe not, keep it simple first
                         };
                     });
                     setMemories(mapped);
                 }
             } catch (err) {
-                console.error("Failed to fetch memories for star map:", err);
+                console.error("Failed to fetch memories for solar system:", err);
             } finally {
                 setLoading(false);
             }
@@ -48,112 +55,125 @@ export default function StarMapPage() {
         fetchMemories();
     }, []);
 
+    if (loading) return null;
+
     return (
-        <div className="relative min-h-screen bg-[#050505] overflow-hidden">
+        <div className="relative min-h-screen bg-[#050505] overflow-hidden flex items-center justify-center">
             <StarField />
 
             {/* Header Overlay */}
-            <div className="relative z-20 pt-32 px-8 text-center pointer-events-none">
+            <div className="fixed top-24 left-1/2 -translate-x-1/2 z-20 text-center pointer-events-none w-full">
                 <motion.h1 
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic"
                 >
-                    OUR <span className="text-gradient">CONSTELLATION</span>
+                    OUR <span className="text-gradient">SOLAR</span> SYSTEM
                 </motion.h1>
                 <motion.p 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="text-[10px] text-white/30 uppercase tracking-[0.5em] font-black mt-4"
+                    className="text-[10px] text-white/30 uppercase tracking-[0.5em] font-black mt-2"
                 >
-                    Every point of light is a moment we shared
+                    Every moment a world, orbiting our core
                 </motion.p>
             </div>
 
-            {/* Constellation Lines Layer */}
-            <svg className="absolute inset-0 z-10 w-full h-full pointer-events-none opacity-20">
-                {memories.length > 1 && [...memories].sort((a,b) => new Date(a.date) - new Date(b.date)).map((star, i) => {
-                    if (i === 0) return null;
-                    const prev = memories[i-1];
-                    return (
-                        <motion.line
-                            key={`line-${star._id}`}
-                            initial={{ pathLength: 0, opacity: 0 }}
-                            animate={{ pathLength: 1, opacity: 1 }}
-                            transition={{ duration: 2, delay: 1 + (i * 0.2) }}
-                            x1={`${prev.x}%`}
-                            y1={`${prev.y}%`}
-                            x2={`${star.x}%`}
-                            y2={`${star.y}%`}
-                            stroke="white"
-                            strokeWidth="1"
-                            strokeDasharray="4 4"
-                        />
-                    );
-                })}
-            </svg>
+            {/* The Sun - Central Core */}
+            <motion.div 
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="relative z-10 w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-yellow-200 via-orange-500 to-red-600 shadow-[0_0_150px_rgba(234,179,8,0.5)] flex items-center justify-center pointer-events-none"
+            >
+                <div className="absolute inset-0 rounded-full animate-pulse bg-yellow-400/20 blur-3xl" />
+                <span className="text-[10px] font-black text-white/80 uppercase tracking-widest text-center px-4 leading-tight">
+                    The <br /> Core
+                </span>
+            </motion.div>
 
-            {/* The Map */}
-            <div className="absolute inset-0 z-10">
-                {memories.map((star) => (
-                    <motion.div
-                        key={star._id}
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: Math.random() * 2 }}
+            {/* Asteroid Belt (Decoration) */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                <div className="w-[500px] h-[500px] border-[40px] border-dotted border-white/10 rounded-full animate-[spin_100s_linear_infinite]" />
+            </div>
+
+            {/* Orbits & Planet/Memories */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-visible">
+                {memories.map((mem) => (
+                    <div 
+                        key={mem._id}
+                        className="absolute border border-white/5 rounded-full z-0"
                         style={{ 
-                            left: `${star.x}%`, 
-                            top: `${star.y}%`,
+                            width: mem.orbitDistance * 2, 
+                            height: mem.orbitDistance * 2 
                         }}
-                        className="absolute cursor-pointer group"
-                        onClick={() => setSelectedStar(star)}
                     >
-                        {/* Star Glow */}
-                        <div 
-                            className="absolute inset-0 blur-xl scale-[4] opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                            style={{ backgroundColor: MOOD_COLORS[star.mood] || "rgba(255,255,255,0.2)" }}
-                        />
-                        
-                        {/* Star Node */}
                         <motion.div
-                            animate={{ 
-                                scale: [1, 1.15, 1],
-                                opacity: [0.8, 1, 0.8]
-                            }}
-                            transition={{ 
-                                duration: 2 + (star.x % 3), 
-                                repeat: Infinity,
-                                ease: "easeInOut" 
-                            }}
-                            className="relative rounded-full shadow-[0_0_20px_rgba(255,255,255,0.4)]"
-                            style={{ 
-                                width: star.size, 
-                                height: star.size,
-                                backgroundColor: MOOD_COLORS[star.mood] || "white",
-                                boxShadow: `0 0 20px ${MOOD_COLORS[star.mood] || "white"}`
-                            }}
-                        />
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: mem.speed, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 pointer-events-none"
+                            style={{ rotate: mem.startAngle }}
+                        >
+                            <motion.div 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedMemory(mem);
+                                }}
+                                className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 cursor-pointer pointer-events-auto group"
+                                whileHover={{ scale: 1.2 }}
+                            >
+                                {/* Planet Atmosphere/Glow */}
+                                <div 
+                                    className="absolute inset-0 blur-2xl scale-[2.5] opacity-20 group-hover:opacity-60 transition-opacity duration-700 rounded-full"
+                                    style={{ background: MOOD_PLANETS[mem.mood] || "white" }}
+                                />
+                                
+                                {/* Planet Body */}
+                                <div 
+                                    className="relative rounded-full shadow-2xl border border-white/10 overflow-hidden"
+                                    style={{ 
+                                        width: mem.size, 
+                                        height: mem.size,
+                                        background: MOOD_PLANETS[mem.mood] || "white"
+                                    }}
+                                >
+                                    <div className="absolute inset-0 bg-black/20" style={{ clipPath: "circle(50% at 70% 70%)" }} />
+                                </div>
 
-                        {/* Label (Mobile: tap to see, Desktop: hover) */}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden md:block">
-                            <p className="text-[10px] font-black text-white uppercase tracking-widest bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                                {star.title}
-                            </p>
-                        </div>
-                    </motion.div>
+                                {/* Decorative Moons for some planets */}
+                                {mem.isMoon && (
+                                    <motion.div
+                                        animate={{ rotate: -360 }}
+                                        transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+                                        className="absolute inset-0"
+                                    >
+                                        <div 
+                                            className="absolute -top-4 left-1/2 w-2 h-2 rounded-full bg-slate-400 shadow-[0_0_5px_rgba(255,255,255,0.5)]"
+                                        />
+                                    </motion.div>
+                                )}
+
+                                {/* Label */}
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden md:block z-[40]">
+                                    <p className="text-[10px] font-black text-white uppercase tracking-widest bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                                        {mem.title}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    </div>
                 ))}
             </div>
 
             {/* Memory Detail Modal */}
             <AnimatePresence>
-                {selectedStar && (
+                {selectedMemory && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl"
-                        onClick={() => setSelectedStar(null)}
+                        className="fixed inset-0 z-[500] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl"
+                        onClick={() => setSelectedMemory(null)}
                     >
                         <motion.div
                             initial={{ scale: 0.9, y: 20 }}
@@ -164,11 +184,11 @@ export default function StarMapPage() {
                         >
                             <div 
                                 className="absolute -top-24 -right-24 w-64 h-64 blur-[80px] opacity-20 rounded-full"
-                                style={{ backgroundColor: MOOD_COLORS[selectedStar.mood] || "white" }}
+                                style={{ background: MOOD_PLANETS[selectedMemory.mood] || "white" }}
                             />
 
                             <button 
-                                onClick={() => setSelectedStar(null)}
+                                onClick={() => setSelectedMemory(null)}
                                 className="absolute top-8 right-8 text-white/20 hover:text-white transition-colors"
                             >
                                 <span className="text-2xl uppercase font-black">✕</span>
@@ -176,32 +196,32 @@ export default function StarMapPage() {
 
                             <div className="relative z-10">
                                 <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em]">
-                                    {new Date(selectedStar.date).toLocaleDateString("en-US", { 
+                                    {new Date(selectedMemory.date).toLocaleDateString("en-US", { 
                                         month: "long", day: "numeric", year: "numeric" 
                                     })}
                                 </span>
                                 <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic mt-2 mb-6">
-                                    {selectedStar.title}
+                                    {selectedMemory.title}
                                 </h2>
                                 
-                                {selectedStar.images?.[0] && (
+                                {selectedMemory.images?.[0] && (
                                     <div className="aspect-video rounded-[2rem] overflow-hidden mb-8 border border-white/10 relative">
                                         <Image
-                                            src={selectedStar.images[0]} 
+                                            src={selectedMemory.images[0]} 
                                             fill
                                             className="object-cover" 
-                                            alt={selectedStar.title} 
+                                            alt={selectedMemory.title} 
                                         />
                                     </div>
                                 )}
 
                                 <p className="text-white/60 text-lg leading-relaxed italic font-medium">
-                                    &quot;{selectedStar.description}&quot;
+                                    &quot;{selectedMemory.description}&quot;
                                 </p>
 
                                 <div className="mt-10 flex items-center gap-4">
                                     <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-white uppercase tracking-widest">
-                                        Mood: {selectedStar.mood}
+                                        Mood: {selectedMemory.mood}
                                     </span>
                                     <Link 
                                         href="/memories" 
@@ -216,6 +236,20 @@ export default function StarMapPage() {
                 )}
             </AnimatePresence>
 
+            {/* Interaction Hint */}
+            <div className="fixed bottom-12 left-12 z-20 hidden md:block">
+                <p className="text-[9px] text-white/20 uppercase tracking-[0.3em] font-black">
+                    Drag the system or tap a planet to recall
+                </p>
+            </div>
+            
+            <style jsx>{`
+                .text-gradient {
+                    background: linear-gradient(to right, #fbbf24, #f59e0b, #ea580c);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                }
+            `}</style>
         </div>
     );
 }
