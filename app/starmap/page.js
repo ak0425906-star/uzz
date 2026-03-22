@@ -216,18 +216,6 @@ export default function StarMapPage() {
                 )}
             </AnimatePresence>
 
-            {/* Back to Dashboard */}
-            <div className="fixed bottom-32 md:bottom-12 left-1/2 -translate-x-1/2 z-[150]">
-                <Link href="/dashboard">
-                    <motion.div 
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-8 py-4 bg-white text-black rounded-full font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-white/10"
-                    >
-                        Return to Orbit
-                    </motion.div>
-                </Link>
-            </div>
         </div>
     );
 }
