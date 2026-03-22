@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 
 const UPCOMING_EVENTS = [
     { date: "2026-03-25", name: "Full Worm Moon", icon: "🌕", type: "Moon" },
@@ -10,7 +10,7 @@ const UPCOMING_EVENTS = [
     { date: "2026-05-05", name: "Eta Aquariids", icon: "☄️", type: "Meteors" },
 ];
 
-export default function CelestialCalendar() {
+function CelestialCalendar() {
     const [futureEvents, setFutureEvents] = useState([]);
 
     useEffect(() => {
@@ -61,3 +61,5 @@ export default function CelestialCalendar() {
         </div>
     );
 }
+
+export default memo(CelestialCalendar);

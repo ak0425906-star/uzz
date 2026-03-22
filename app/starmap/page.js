@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import StarField from "@/components/StarField";
 import Link from "next/link";
+import Image from "next/image";
 
 const MOOD_COLORS = {
     Happy: "rgba(236, 72, 153, 0.5)", // Pink
@@ -156,10 +157,11 @@ export default function StarMapPage() {
                                 </h2>
                                 
                                 {selectedStar.images?.[0] && (
-                                    <div className="aspect-video rounded-[2rem] overflow-hidden mb-8 border border-white/10">
-                                        <img 
+                                    <div className="aspect-video rounded-[2rem] overflow-hidden mb-8 border border-white/10 relative">
+                                        <Image
                                             src={selectedStar.images[0]} 
-                                            className="w-full h-full object-cover" 
+                                            fill
+                                            className="object-cover" 
                                             alt={selectedStar.title} 
                                         />
                                     </div>

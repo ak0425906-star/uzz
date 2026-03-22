@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import StarField from "@/components/StarField";
 import AnniversaryBanner from "@/components/AnniversaryBanner";
 import CountdownWidget from "@/components/CountdownWidget";
@@ -17,8 +18,10 @@ import MessageFeed from "@/components/MessageFeed";
 import SOSWidget from "@/components/SOSWidget";
 import CelestialCalendar from "@/components/CelestialCalendar";
 import NebulaMood from "@/components/NebulaMood";
-import MilestonesWidget from "@/components/MilestonesWidget";
-import MilestoneCelebration from "@/components/MilestoneCelebration";
+import dynamic from "next/dynamic";
+
+const MilestonesWidget = dynamic(() => import("@/components/MilestonesWidget"), { ssr: false });
+const MilestoneCelebration = dynamic(() => import("@/components/MilestoneCelebration"), { ssr: false });
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
@@ -298,7 +301,12 @@ export default function DashboardPage() {
                                         <div className="flex items-center gap-6 p-2">
                                             <div className="w-24 h-24 rounded-[2rem] overflow-hidden flex-shrink-0 bg-[#0a0a1a] shadow-2xl relative">
                                                 {(mem.images?.length > 0 || mem.imageUrl) ? (
-                                                    <img src={mem.images?.[0] || mem.imageUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                                                    <Image 
+                                                        src={mem.images?.[0] || mem.imageUrl} 
+                                                        fill
+                                                        className="object-cover group-hover:scale-110 transition-transform duration-700" 
+                                                        alt={mem.title} 
+                                                    />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-4xl opacity-40">{mem.mood}</div>
                                                 )}

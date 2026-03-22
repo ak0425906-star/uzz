@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function OnThisDayWidget({ memories = [], journals = [] }) {
     const [expanded, setExpanded] = useState(false);
@@ -57,8 +58,8 @@ export default function OnThisDayWidget({ memories = [], journals = [] }) {
                                         className="flex items-center gap-4 p-3 rounded-2xl bg-white/[0.03] border border-white/5"
                                     >
                                         {mem.imageUrl ? (
-                                            <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0">
-                                                <img src={mem.imageUrl} alt="" className="w-full h-full object-cover" />
+                                            <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 relative">
+                                                <Image src={mem.imageUrl} alt="" fill className="object-cover" />
                                             </div>
                                         ) : (
                                             <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-xl flex-shrink-0">
@@ -94,13 +95,13 @@ export default function OnThisDayWidget({ memories = [], journals = [] }) {
                 {!expanded && memories.length > 0 && (
                     <div className="flex -space-x-2 mt-2">
                         {memories.slice(0, 4).map((mem, i) => (
-                            <div
-                                key={mem._id}
-                                className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#060614] overflow-hidden"
-                            >
-                                {mem.imageUrl ? (
-                                    <img src={mem.imageUrl} alt="" className="w-full h-full object-cover" />
-                                ) : (
+                                <div
+                                    key={mem._id}
+                                    className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#060614] overflow-hidden relative"
+                                >
+                                    {mem.imageUrl ? (
+                                        <Image src={mem.imageUrl} alt="" fill className="object-cover" />
+                                    ) : (
                                     <div className="w-full h-full flex items-center justify-center text-xs">
                                         {mem.mood}
                                     </div>

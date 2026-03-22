@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { motion } from "framer-motion";
 
-export default function SOSWidget() {
+function SOSWidget() {
     const [status, setStatus] = useState("idle"); // idle, sending, success, error
 
     const sendPing = async (type) => {
@@ -69,3 +69,5 @@ export default function SOSWidget() {
         </div>
     );
 }
+
+export default memo(SOSWidget);

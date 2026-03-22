@@ -2,6 +2,9 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
+
+const MotionImage = motion(Image);
 
 export default function MemoryDetailModal({ memory, onClose }) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -84,14 +87,16 @@ export default function MemoryDetailModal({ memory, onClose }) {
                         </AnimatePresence>
 
                         <AnimatePresence mode="wait">
-                            <motion.img
+                            <MotionImage
                                 key={activeImageIndex}
                                 initial={{ opacity: 0, filter: "blur(10px) brightness(0.5)", scale: 1.05 }}
                                 animate={{ opacity: 1, filter: "blur(0px) brightness(1)", scale: 1 }}
                                 exit={{ opacity: 0, filter: "blur(10px) brightness(0.5)", scale: 0.95 }}
                                 transition={{ duration: 0.6 }}
                                 src={images[activeImageIndex]}
-                                className="w-full h-full object-cover lg:object-contain relative z-10"
+                                fill
+                                className="object-cover lg:object-contain relative z-10"
+                                alt={memory.title}
                             />
                         </AnimatePresence>
                         

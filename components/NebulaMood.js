@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { motion } from "framer-motion";
 
 const MOOD_COLORS = {
@@ -14,7 +14,7 @@ const MOOD_COLORS = {
     Blessed: "from-amber-300 via-yellow-200 to-white",
 };
 
-export default function NebulaMood() {
+function NebulaMood() {
     const [mood, setMood] = useState("Peaceful");
     const [loading, setLoading] = useState(true);
 
@@ -94,3 +94,5 @@ export default function NebulaMood() {
         </div>
     );
 }
+
+export default memo(NebulaMood);

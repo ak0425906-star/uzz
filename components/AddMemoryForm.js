@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import VoiceVault from "./VoiceVault";
 
 export default function AddMemoryForm({ onAdd, onClose }) {
@@ -202,7 +203,7 @@ export default function AddMemoryForm({ onAdd, onClose }) {
                         <div className="grid grid-cols-4 gap-4">
                             {form.images?.map((url, i) => (
                                 <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-white/10 relative group shadow-2xl">
-                                    <img src={url} alt="" className="w-full h-full object-cover" />
+                                    <Image src={url} alt="" fill className="object-cover" />
                                     <button
                                         type="button"
                                         onClick={() => setForm(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
