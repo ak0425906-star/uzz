@@ -35,6 +35,13 @@ const QUESTIONS = [
     "What do you think is our greatest strength as a couple?",
     "What's something you're grateful for about us today?",
     "If you wrote me a letter from the future, what would it say?",
+    "If we were the last two people in the universe, what's the first thing we'd build?",
+    "Which star in our map is your absolute favorite and why?",
+    "What's a secret dream you want us to achieve under the full moon?",
+    "If you could send a message to us 5 years ago, what would it be?",
+    "What's the most 'cosmic' coincidence that ever happened to us?",
+    "If our love had a distinct sound or frequency, what would it be?",
+    "What's one thing you're most excited to experience together next?",
 ];
 
 // GET — get today's question + answers

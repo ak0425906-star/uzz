@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useToast } from "@/components/ToastProvider";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,6 +15,7 @@ import OnThisDayWidget from "@/components/OnThisDayWidget";
 import DailyPromptWidget from "@/components/DailyPromptWidget";
 import LoveStreakWidget from "@/components/LoveStreakWidget";
 import QuestionOfTheDay from "@/components/QuestionOfTheDay";
+import AnniversaryVault from "@/components/AnniversaryVault";
 import MessageFeed from "@/components/MessageFeed";
 import SOSWidget from "@/components/SOSWidget";
 import CelestialCalendar from "@/components/CelestialCalendar";
@@ -24,10 +26,12 @@ const MilestonesWidget = dynamic(() => import("@/components/MilestonesWidget"), 
 const MilestoneCelebration = dynamic(() => import("@/components/MilestoneCelebration"), { ssr: false });
 
 export default function DashboardPage() {
+    const toast = useToast();
     const { data: session, status } = useSession();
     const router = useRouter();
     const [stats, setStats] = useState({ memories: 0, letters: 0 });
     const [recentMemories, setRecentMemories] = useState([]);
+    const [anniversaries, setAnniversaries] = useState([]);
     const [insights, setInsights] = useState(null);
     const [loading, setLoading] = useState(true);
     const [celebratedRank, setCelebratedRank] = useState(null);
@@ -51,6 +55,7 @@ export default function DashboardPage() {
                 fetch("/api/memories"),
                 fetch("/api/letters"),
                 fetch("/api/insights"),
+                fetch("/api/anniversaries"),
             ]);
 
             if (memRes.ok) {
@@ -78,6 +83,11 @@ export default function DashboardPage() {
             if (insightRes.ok) {
                 const insightData = await insightRes.json();
                 setInsights(insightData);
+            }
+
+            if (annRes?.ok) {
+                const annData = await annRes.json();
+                setAnniversaries(annData.anniversaries || []);
             }
         } catch (err) {
             console.error("Failed to fetch dashboard data:", err);
@@ -125,6 +135,20 @@ export default function DashboardPage() {
             setDaysTogether(days);
         }
     }, [session]);
+
+    useEffect(() => {
+        if (anniversaries.length > 0) {
+            const today = new Date();
+            const matches = anniversaries.filter(ann => {
+                const annDate = new Date(ann.date);
+                return annDate.getMonth() === today.getMonth() && annDate.getDate() === today.getDate();
+            });
+
+            matches.forEach(match => {
+                toast.love(`Today is ${match.title}! ✨`);
+            });
+        }
+    }, [anniversaries, toast]);
 
     if (status === "loading" || loading) {
         return (
@@ -332,10 +356,17 @@ export default function DashboardPage() {
                     </motion.div>
                 </div>
 
-                {/* Love Streaks + Question of the Day */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* Love Streaks + Question of the Day + Anniversary Vault */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <LoveStreakWidget />
                     <QuestionOfTheDay />
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="glass-morphism rounded-[2.5rem] p-6 md:p-8 border-white/10 relative overflow-hidden"
+                    >
+                        <AnniversaryVault />
+                    </motion.div>
                 </div>
 
                 {/* Prompts + On This Day */}

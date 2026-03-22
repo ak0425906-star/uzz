@@ -79,9 +79,9 @@ export default function QuestionOfTheDay() {
 
             <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-5">
-                    <span className="text-xl">💬</span>
-                    <h3 className="text-[10px] font-black text-white/50 uppercase tracking-[0.3em]">
-                        Question of the Day
+                    <span className="text-xl">✨</span>
+                    <h3 className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em]">
+                        Stellar Stories
                     </h3>
                 </div>
 
@@ -137,9 +137,9 @@ export default function QuestionOfTheDay() {
                             whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={submitting || !answer.trim()}
-                            className="w-full py-3.5 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-[0.2em] shadow-lg disabled:opacity-30 transition-all mb-4"
+                            className="w-full py-4 rounded-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-cyan-500/10 disabled:opacity-30 transition-all mb-4"
                         >
-                            {submitting ? "Submitting..." : "Lock In Answer 🔒"}
+                            {submitting ? "Transmitting..." : "Radiate Answer ✨"}
                         </motion.button>
                     </form>
                 )}
