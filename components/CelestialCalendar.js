@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const UPCOMING_EVENTS = [
     { date: "2026-03-25", name: "Full Worm Moon", icon: "🌕", type: "Moon" },
@@ -10,8 +11,13 @@ const UPCOMING_EVENTS = [
 ];
 
 export default function CelestialCalendar() {
-    const today = new Date();
-    const futureEvents = UPCOMING_EVENTS.filter(e => new Date(e.date) >= today).slice(0, 2);
+    const [futureEvents, setFutureEvents] = useState([]);
+
+    useEffect(() => {
+        const today = new Date();
+        const filtered = UPCOMING_EVENTS.filter(e => new Date(e.date) >= today).slice(0, 2);
+        setFutureEvents(filtered);
+    }, []);
 
     return (
         <div className="flex flex-col h-full justify-between">

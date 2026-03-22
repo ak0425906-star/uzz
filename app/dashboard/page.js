@@ -28,6 +28,7 @@ export default function DashboardPage() {
     const [insights, setInsights] = useState(null);
     const [loading, setLoading] = useState(true);
     const [celebratedRank, setCelebratedRank] = useState(null);
+    const [daysTogether, setDaysTogether] = useState(1);
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -128,11 +129,16 @@ export default function DashboardPage() {
 
     if (!session) return null;
 
-    const togetherDate = session.user?.togetherSince || session.user?.createdAt || Date.now();
-    const daysTogether = Math.floor(
-        (new Date() - new Date(togetherDate)) /
-        (1000 * 60 * 60 * 24)
-    ) || 1;
+    useEffect(() => {
+        if (session?.user) {
+            const togetherDate = session.user.togetherSince || session.user.createdAt || new Date();
+            const days = Math.floor(
+                (new Date() - new Date(togetherDate)) /
+                (1000 * 60 * 60 * 24)
+            ) || 1;
+            setDaysTogether(days);
+        }
+    }, [session]);
 
     return (
         <div className="relative min-h-screen bg-[#060614] pt-24 md:pt-28 pb-40 md:pb-12 px-4 sm:px-6">
