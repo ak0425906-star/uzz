@@ -81,16 +81,33 @@ export default function SolarSystemMap() {
             </div>
 
             {/* The Sun - Central Core */}
-            <motion.div 
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="relative z-10 w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-yellow-200 via-orange-500 to-red-600 shadow-[0_0_150px_rgba(234,179,8,0.5)] flex items-center justify-center pointer-events-none"
-            >
-                <div className="absolute inset-0 rounded-full animate-pulse bg-yellow-400/20 blur-3xl" />
-                <span className="text-[10px] font-black text-white/80 uppercase tracking-widest text-center px-4 leading-tight">
-                    The <br /> Core
-                </span>
-            </motion.div>
+            <div className="relative z-10 w-40 h-40 md:w-64 md:h-64 flex items-center justify-center pointer-events-none">
+                {/* Massive Radial Glow (Outer Halo) */}
+                <div className="absolute inset-[-100px] bg-gradient-to-r from-orange-600/30 to-yellow-500/30 blur-[100px] rounded-full animate-pulse" />
+                
+                {/* Corona Layer 1 - Rotating Flares */}
+                <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-orange-500/20 to-transparent blur-2xl"
+                />
+
+                {/* Corona Layer 2 - Shimmering Heat */}
+                <motion.div 
+                    animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute inset-[-20px] rounded-full border-[10px] border-orange-500/10 blur-xl"
+                />
+
+                {/* The Sun Body - Multilayered Gradient */}
+                <div className="relative w-full h-full rounded-full bg-[#ffc300] shadow-[0_0_100px_#ff9500,0_0_200px_#ff5e00,inset_0_0_50px_#9e2a2b] overflow-hidden">
+                    {/* Surface Texture (Shimmering Granules) */}
+                    <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[radial-gradient(circle_at_20%_30%,_white_5%,_transparent_10%),_radial-gradient(circle_at_70%_60%,_white_5%,_transparent_15%),_radial-gradient(circle_at_40%_80%,_white_8%,_transparent_20%)] blur-[2px]" />
+                    
+                    {/* Core Intensity */}
+                    <div className="absolute inset-4 rounded-full bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-80" />
+                </div>
+            </div>
 
             {/* Asteroid Belt (Decoration) */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
