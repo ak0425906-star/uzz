@@ -32,9 +32,9 @@ export default function StarMapPage() {
                         const hash = m._id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
                         return {
                             ...m,
-                            x: (hash % 80) + 10, // 10% to 90%
+                            x: (hash % 80) + 10,
                             y: ((hash * 13) % 80) + 10,
-                            size: 4 + (hash % 6),
+                            size: 10 + (hash % 10), // Even bigger for visibility
                         };
                     });
                     setMemories(mapped);
@@ -71,6 +71,29 @@ export default function StarMapPage() {
                 </motion.p>
             </div>
 
+            {/* Constellation Lines Layer */}
+            <svg className="absolute inset-0 z-10 w-full h-full pointer-events-none opacity-20">
+                {memories.length > 1 && [...memories].sort((a,b) => new Date(a.date) - new Date(b.date)).map((star, i) => {
+                    if (i === 0) return null;
+                    const prev = memories[i-1];
+                    return (
+                        <motion.line
+                            key={`line-${star._id}`}
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            animate={{ pathLength: 1, opacity: 1 }}
+                            transition={{ duration: 2, delay: 1 + (i * 0.2) }}
+                            x1={`${prev.x}%`}
+                            y1={`${prev.y}%`}
+                            x2={`${star.x}%`}
+                            y2={`${star.y}%`}
+                            stroke="white"
+                            strokeWidth="1"
+                            strokeDasharray="4 4"
+                        />
+                    );
+                })}
+            </svg>
+
             {/* The Map */}
             <div className="absolute inset-0 z-10">
                 {memories.map((star) => (
@@ -95,16 +118,21 @@ export default function StarMapPage() {
                         {/* Star Node */}
                         <motion.div
                             animate={{ 
-                                scale: [1, 1.2, 1],
-                                opacity: [0.7, 1, 0.7]
+                                scale: [1, 1.15, 1],
+                                opacity: [0.8, 1, 0.8]
                             }}
                             transition={{ 
-                                duration: 3 + (star.x % 4), 
+                                duration: 2 + (star.x % 3), 
                                 repeat: Infinity,
                                 ease: "easeInOut" 
                             }}
-                            className="relative w-2 h-2 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.8)]"
-                            style={{ width: star.size, height: star.size }}
+                            className="relative rounded-full shadow-[0_0_20px_rgba(255,255,255,0.4)]"
+                            style={{ 
+                                width: star.size, 
+                                height: star.size,
+                                backgroundColor: MOOD_COLORS[star.mood] || "white",
+                                boxShadow: `0 0 20px ${MOOD_COLORS[star.mood] || "white"}`
+                            }}
                         />
 
                         {/* Label (Mobile: tap to see, Desktop: hover) */}
