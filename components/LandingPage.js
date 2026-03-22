@@ -17,32 +17,46 @@ export default function LandingPage() {
                 
                 {/* Full Moon Centerpiece */}
                 <div className="relative mb-12">
-                    {/* Breathing Halo */}
+                {/* Breathing Halo */}
                     <motion.div
                         animate={{ 
                             scale: [1, 1.15, 1],
-                            opacity: [0.3, 0.6, 0.3],
-                            boxShadow: [
-                                "0 0 100px 20px rgba(245, 243, 206, 0.2)",
-                                "0 0 150px 40px rgba(245, 243, 206, 0.4)",
-                                "0 0 100px 20px rgba(245, 243, 206, 0.2)"
-                            ]
+                            opacity: [0.15, 0.35, 0.15],
                         }}
-                        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute inset-0 rounded-full bg-white/10 blur-[60px]"
+                        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute inset-[-60px] rounded-full bg-[radial-gradient(circle,_rgba(200,210,230,0.15)_0%,_transparent_70%)]"
                     />
                     
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 2, ease: "easeOut" }}
-                        className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-[0_0_80px_rgba(255,255,255,0.2)] border border-white/20"
+                        className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shadow-[0_0_60px_rgba(200,210,230,0.35),0_0_120px_rgba(200,210,230,0.15)]"
                     >
-                        {/* High-res Moon Surface Mockup (using gradient + noise) */}
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,_#F5F3CE_0%,_#DEDCB2_50%,_#B5B38F_100%)]">
-                            <div className="absolute inset-0 opacity-20 mix-blend-overlay" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/carbon-fibre.png")' }} />
-                            <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-transparent" />
+                        {/* Base Surface */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#e8e8e8] via-[#c8ccd0] to-[#9ea3a8]" />
+
+                        {/* Crater Texture */}
+                        <div className="absolute inset-0 opacity-30">
+                            <div className="absolute w-[18%] h-[18%] top-[20%] left-[25%] rounded-full bg-[radial-gradient(circle,_rgba(0,0,0,0.15)_60%,_transparent_100%)]" />
+                            <div className="absolute w-[12%] h-[12%] top-[55%] left-[60%] rounded-full bg-[radial-gradient(circle,_rgba(0,0,0,0.12)_60%,_transparent_100%)]" />
+                            <div className="absolute w-[25%] h-[25%] top-[35%] left-[40%] rounded-full bg-[radial-gradient(circle,_rgba(0,0,0,0.1)_60%,_transparent_100%)]" />
+                            <div className="absolute w-[10%] h-[10%] top-[70%] left-[30%] rounded-full bg-[radial-gradient(circle,_rgba(0,0,0,0.14)_60%,_transparent_100%)]" />
+                            <div className="absolute w-[8%] h-[8%] top-[15%] left-[65%] rounded-full bg-[radial-gradient(circle,_rgba(0,0,0,0.12)_60%,_transparent_100%)]" />
+                            <div className="absolute w-[15%] h-[15%] top-[60%] left-[15%] rounded-full bg-[radial-gradient(circle,_rgba(0,0,0,0.08)_60%,_transparent_100%)]" />
                         </div>
+
+                        {/* Mare (Dark Seas) */}
+                        <div className="absolute inset-0 opacity-20">
+                            <div className="absolute w-[40%] h-[35%] top-[15%] left-[20%] rounded-[60%] bg-[#8a8d90] blur-[8px]" />
+                            <div className="absolute w-[30%] h-[20%] top-[50%] left-[45%] rounded-[50%] bg-[#8a8d90] blur-[6px]" />
+                        </div>
+
+                        {/* Light Refraction (Terminator Edge) */}
+                        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-black/25 rounded-full" />
+
+                        {/* Specular Highlight */}
+                        <div className="absolute top-[10%] left-[15%] w-[35%] h-[35%] rounded-full bg-white/20 blur-[15px]" />
                     </motion.div>
 
                     {/* Orbiting Elements (Very slow) */}
