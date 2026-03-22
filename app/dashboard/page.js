@@ -16,6 +16,7 @@ import DailyPromptWidget from "@/components/DailyPromptWidget";
 import LoveStreakWidget from "@/components/LoveStreakWidget";
 import QuestionOfTheDay from "@/components/QuestionOfTheDay";
 import AnniversaryVault from "@/components/AnniversaryVault";
+import StellarSpinner from "@/components/StellarSpinner";
 import MessageFeed from "@/components/MessageFeed";
 import SOSWidget from "@/components/SOSWidget";
 import CelestialCalendar from "@/components/CelestialCalendar";
@@ -137,15 +138,37 @@ export default function DashboardPage() {
     }, [session]);
 
     useEffect(() => {
-        if (anniversaries.length > 0) {
+        if (anniversaries.length > 0 || session?.user?.anniversaryDate) {
             const today = new Date();
-            const matches = anniversaries.filter(ann => {
+            const allAlarms = [...anniversaries];
+            
+            // Add primary anniversary if set
+            if (session.user.anniversaryDate) {
+                allAlarms.push({
+                    title: session.user.milestoneName || "Our Primary Anniversary",
+                    date: session.user.anniversaryDate,
+                    _id: "primary_ann"
+                });
+            }
+
+            const matches = allAlarms.filter(ann => {
                 const annDate = new Date(ann.date);
                 return annDate.getMonth() === today.getMonth() && annDate.getDate() === today.getDate();
             });
 
-            matches.forEach(match => {
+            matches.forEach(async (match) => {
                 toast.love(`Today is ${match.title}! ✨`);
+                
+                // Trigger real-time push for both partners
+                const notifiedKey = `notified_${match._id}_${today.getFullYear()}`;
+                if (!localStorage.getItem(notifiedKey)) {
+                    await fetch("/api/push/anniversary", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ anniversaryTitle: match.title })
+                    });
+                    localStorage.setItem(notifiedKey, "true");
+                }
             });
         }
     }, [anniversaries, toast]);
@@ -366,6 +389,19 @@ export default function DashboardPage() {
                         className="glass-morphism rounded-[2.5rem] p-6 md:p-8 border-white/10 relative overflow-hidden"
                     >
                         <AnniversaryVault />
+                    </motion.div>
+                </div>
+
+                {/* Stellar Spinner Section */}
+                <div className="mb-12">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        className="glass-morphism rounded-[3rem] border-white/10 relative overflow-hidden"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-pink-500/5" />
+                        <StellarSpinner />
                     </motion.div>
                 </div>
 
