@@ -6,17 +6,31 @@ import StarField from "@/components/StarField";
 import Link from "next/link";
 import Image from "next/image";
 
-const MOOD_STARS = {
-    Happy:      { core: "#fde047", glow: "#eab308", shadow: "rgba(234,179,8,0.6)" },
-    Love:       { core: "#f472b6", glow: "#ec4899", shadow: "rgba(236,72,153,0.6)" },
-    Excited:    { core: "#fb923c", glow: "#f97316", shadow: "rgba(249,115,22,0.6)" },
-    Calm:       { core: "#2dd4bf", glow: "#14b8a6", shadow: "rgba(20,184,166,0.6)" },
-    Peaceful:   { core: "#60a5fa", glow: "#3b82f6", shadow: "rgba(59,130,246,0.6)" },
-    Sad:        { core: "#818cf8", glow: "#6366f1", shadow: "rgba(99,102,241,0.6)" },
-    Reflective: { core: "#a78bfa", glow: "#8b5cf6", shadow: "rgba(139,92,246,0.6)" },
-};
+// 20 distinct, vibrant star colors — each memory gets a unique one
+const STAR_PALETTE = [
+    { core: "#fde047", glow: "#eab308", shadow: "rgba(234,179,8,0.6)" },    // Gold
+    { core: "#f472b6", glow: "#ec4899", shadow: "rgba(236,72,153,0.6)" },    // Rose
+    { core: "#fb923c", glow: "#f97316", shadow: "rgba(249,115,22,0.6)" },    // Tangerine
+    { core: "#2dd4bf", glow: "#14b8a6", shadow: "rgba(20,184,166,0.6)" },    // Teal
+    { core: "#60a5fa", glow: "#3b82f6", shadow: "rgba(59,130,246,0.6)" },    // Sky
+    { core: "#818cf8", glow: "#6366f1", shadow: "rgba(99,102,241,0.6)" },    // Indigo
+    { core: "#a78bfa", glow: "#8b5cf6", shadow: "rgba(139,92,246,0.6)" },    // Violet
+    { core: "#e879f9", glow: "#d946ef", shadow: "rgba(217,70,239,0.6)" },    // Magenta
+    { core: "#f9a8d4", glow: "#f472b6", shadow: "rgba(244,114,182,0.6)" },   // Blush
+    { core: "#34d399", glow: "#10b981", shadow: "rgba(16,185,129,0.6)" },    // Emerald
+    { core: "#fca5a1", glow: "#f87171", shadow: "rgba(248,113,113,0.6)" },   // Coral
+    { core: "#93c5fd", glow: "#60a5fa", shadow: "rgba(96,165,250,0.6)" },    // Ice Blue
+    { core: "#a5f3fc", glow: "#22d3ee", shadow: "rgba(34,211,238,0.6)" },    // Cyan
+    { core: "#fcd34d", glow: "#f59e0b", shadow: "rgba(245,158,11,0.6)" },    // Amber
+    { core: "#c084fc", glow: "#a855f7", shadow: "rgba(168,85,247,0.6)" },    // Purple
+    { core: "#86efac", glow: "#4ade80", shadow: "rgba(74,222,128,0.6)" },    // Mint
+    { core: "#fdba74", glow: "#fb923c", shadow: "rgba(251,146,60,0.6)" },    // Peach
+    { core: "#67e8f9", glow: "#06b6d4", shadow: "rgba(6,182,212,0.6)" },     // Aqua
+    { core: "#f0abfc", glow: "#e879f9", shadow: "rgba(232,121,249,0.6)" },   // Orchid
+    { core: "#fef08a", glow: "#facc15", shadow: "rgba(250,204,21,0.6)" },    // Lemon
+];
 
-const DEFAULT_STAR = { core: "#e2e8f0", glow: "#94a3b8", shadow: "rgba(148,163,184,0.6)" };
+const getStarColor = (hash, index) => STAR_PALETTE[(hash + index * 7) % STAR_PALETTE.length];
 
 export default function LunarMemoryMap() {
     const [memories, setMemories] = useState([]);
@@ -34,7 +48,8 @@ export default function LunarMemoryMap() {
                         const hash = m._id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
                         const orbitDistance = 160 + index * 55 + (hash % 35);
                         const speed = 18 + index * 4 + (hash % 8);
-                        const points = 4 + (hash % 5); // 4-8 ray points → unique shapes
+                        const points = 4 + (hash % 5);
+                        const color = getStarColor(hash, index);
                         return {
                             ...m,
                             orbitDistance,
@@ -42,6 +57,7 @@ export default function LunarMemoryMap() {
                             startAngle: hash % 360,
                             size: 14 + (hash % 10),
                             points,
+                            color,
                         };
                     });
                     setMemories(mapped);
@@ -124,7 +140,7 @@ export default function LunarMemoryMap() {
             {/* ═══ ORBIT RINGS & GLOWING STARS ═══ */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-visible">
                 {memories.map((mem) => {
-                    const palette = MOOD_STARS[mem.mood] || DEFAULT_STAR;
+                    const palette = mem.color;
                     return (
                         <div
                             key={mem._id}
@@ -220,7 +236,7 @@ export default function LunarMemoryMap() {
                         >
                             <div
                                 className="absolute -top-24 -right-24 w-64 h-64 blur-[80px] opacity-25 rounded-full"
-                                style={{ backgroundColor: (MOOD_STARS[selectedMemory.mood] || DEFAULT_STAR).glow }}
+                                style={{ backgroundColor: selectedMemory.color.glow }}
                             />
 
                             <button
@@ -261,8 +277,8 @@ export default function LunarMemoryMap() {
                                     <span
                                         className="px-4 py-1.5 rounded-full border text-[10px] font-black text-white uppercase tracking-widest"
                                         style={{
-                                            borderColor: (MOOD_STARS[selectedMemory.mood] || DEFAULT_STAR).glow,
-                                            backgroundColor: `${(MOOD_STARS[selectedMemory.mood] || DEFAULT_STAR).shadow}`,
+                                            borderColor: selectedMemory.color.glow,
+                                            backgroundColor: selectedMemory.color.shadow,
                                         }}
                                     >
                                         {selectedMemory.mood}
