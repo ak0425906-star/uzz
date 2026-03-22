@@ -5,9 +5,19 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function MilestoneCelebration({ rankTitle, rankIcon }) {
     const [isVisible, setIsVisible] = useState(false);
+    const [particles, setParticles] = useState([]);
 
     useEffect(() => {
         if (rankTitle) {
+            // Pre-calculate stable particle positions
+            const newParticles = [...Array(20)].map((_, i) => ({
+                id: i,
+                x: (Math.random() - 0.5) * 1000,
+                y: (Math.random() - 0.5) * 1000,
+                delay: Math.random() * 0.5
+            }));
+            setParticles(newParticles);
+            
             setIsVisible(true);
             const timer = setTimeout(() => setIsVisible(false), 5000);
             return () => clearTimeout(timer);
@@ -53,17 +63,17 @@ export default function MilestoneCelebration({ rankTitle, rankIcon }) {
                     </motion.div>
 
                     {/* Stardust Particles */}
-                    {[...Array(20)].map((_, i) => (
+                    {particles.map((p) => (
                         <motion.div
-                            key={i}
+                            key={p.id}
                             initial={{ x: 0, y: 0, opacity: 0 }}
                             animate={{ 
-                                x: (Math.random() - 0.5) * 1000, 
-                                y: (Math.random() - 0.5) * 1000, 
+                                x: p.x, 
+                                y: p.y, 
                                 opacity: [0, 1, 0],
                                 scale: [0, 1, 0]
                             }}
-                            transition={{ duration: 2, delay: Math.random() * 0.5 }}
+                            transition={{ duration: 2, delay: p.delay }}
                             className="absolute w-2 h-2 bg-white rounded-full shadow-[0_0_10px_white]"
                         />
                     ))}
