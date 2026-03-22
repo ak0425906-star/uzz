@@ -15,6 +15,8 @@ import LoveStreakWidget from "@/components/LoveStreakWidget";
 import QuestionOfTheDay from "@/components/QuestionOfTheDay";
 import MessageFeed from "@/components/MessageFeed";
 import SOSWidget from "@/components/SOSWidget";
+import CelestialCalendar from "@/components/CelestialCalendar";
+import NebulaMood from "@/components/NebulaMood";
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
@@ -184,12 +186,34 @@ export default function DashboardPage() {
                         <SOSWidget />
                     </motion.div>
 
+                    {/* Nebula Mood Tracker - NEW */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="md:col-span-5 md:row-span-1 glass-morphism rounded-[2.5rem] p-6 sm:p-8 relative overflow-hidden group"
+                    >
+                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full" />
+                        <NebulaMood />
+                    </motion.div>
+
+                    {/* Celestial Calendar - NEW */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.35 }}
+                        className="md:col-span-3 md:row-span-1 glass-morphism rounded-[2.5rem] p-6 sm:p-8 relative overflow-hidden group"
+                    >
+                        <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-blue-500/10 blur-3xl rounded-full" />
+                        <CelestialCalendar />
+                    </motion.div>
+
                     {/* Upcoming Letter Notification */}
                     {stats.upcoming && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="md:col-span-9 md:row-span-1 bg-gradient-to-r from-pink-600/20 to-purple-600/20 rounded-[2.5rem] border border-pink-500/30 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 overflow-hidden relative group"
+                            className="md:col-span-8 md:row-span-1 bg-gradient-to-r from-pink-600/20 to-purple-600/20 rounded-[2.5rem] border border-pink-500/30 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 overflow-hidden relative group"
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 group-hover:bg-pink-500/20 transition-all duration-700" />
                             <div className="flex items-center gap-6 relative z-10">
@@ -210,7 +234,7 @@ export default function DashboardPage() {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className="md:col-span-9 md:row-span-2 glass-morphism rounded-[3rem] p-8 sm:p-10 overflow-hidden relative"
+                        className="md:col-span-12 md:row-span-2 glass-morphism rounded-[3rem] p-8 sm:p-10 overflow-hidden relative"
                     >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
                             <div>

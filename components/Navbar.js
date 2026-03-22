@@ -26,7 +26,7 @@ export default function Navbar() {
         { href: "/dashboard", label: "Home", icon: "🌌" },
         { href: "/messages", label: "Messages", icon: "💬" },
         { href: "/memories", label: "Timeline", icon: "💫" },
-        { href: "/journal", label: "Moods", icon: "📓" },
+        { href: "/starmap", label: "Star Map", icon: "🗺️" },
         { href: "/letters", label: "Archive", icon: "💌" },
         { href: "/our-story", label: "Stats", icon: "📊" },
     ];
